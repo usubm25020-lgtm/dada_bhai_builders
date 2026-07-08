@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEW DADA BHAI BUILDERS</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            bg: '#020617',      
+                            panel: '#0f172a',   
+                            border: '#1e293b',  
+                            primary: '#3b82f6', 
+                            secondary: '#60a5fa',
+                            success: '#10b981', 
+                            danger: '#ef4444',  
+                            warning: '#f59e0b',
+                            info: '#8b5cf6'     
+                        }
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 20px rgba(59, 130, 246, 0.2)',
+                        'panel': '0 10px 30px -10px rgba(0, 0, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Root for Zooming */
+        html { font-size: 16px; transition: font-size 0.3s ease; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(30, 58, 138, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.08), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+
+        .glass-input {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: #020617;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast {
+            padding: 14px 20px; border-radius: 12px; font-weight: 600;
+            display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: slideInRight 0.3s ease forwards, fadeOut 0.3s 3s forwards;
+            pointer-events: auto; background: #0f172a; border: 1px solid #1e293b;
+        }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); visibility: hidden; } }
+
+        .nav-item { transition: all 0.2s ease; border: 1px solid transparent; }
+        .nav-item.active { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.3); }
+        
+        @media (max-width: 768px) {
+            .mobile-bottom-nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #1e293b; }
+            .nav-item.active { border: none; color: #3b82f6; background: transparent; }
+            .nav-item.active i { transform: translateY(-2px); color: #3b82f6; }
+        }
+
+        .receipt-pattern {
+            background-color: #0f172a;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 100% 2px;
+        }
+        
+        a[href], button { position: relative; z-index: 2; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-primary selection:text-white">
+
+    <div id="toast-container"></div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-sm p-6 rounded-3xl slide-up border-brand-primary/30">
+            <div class="flex items-center gap-3 mb-4 text-white">
+                <div class="p-2 bg-blue-500/20 rounded-full"><i class="ph ph-question text-2xl text-blue-400"></i></div>
+                <h3 class="text-xl font-bold" id="confirm-title">Confirm</h3>
+            </div>
+            <p class="text-gray-300 mb-8 font-medium" id="confirm-message">Are you sure?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition font-bold">Cancel</button>
+                <button id="confirm-btn" class="flex-1 px-4 py-3 rounded-xl bg-brand-primary hover:bg-blue-600 text-white transition font-bold shadow-neon-blue">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partial Delivery Update Modal -->
+    <div id="progress-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 slide-up border border-brand-info/50 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+            <h3 class="text-xl font-black text-white mb-4 flex items-center gap-2"><i class="ph ph-truck text-brand-info text-2xl"></i> Delivery Update</h3>
+            <input type="hidden" id="prog-task-id">
+            
+            <div id="prog-items-container" class="space-y-3 mb-4 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                <!-- Dynamic progress items injected here -->
+            </div>
+            
+            <textarea id="prog-desc" rows="2" class="glass-input w-full p-4 rounded-2xl mb-5 text-sm font-bold placeholder-slate-500" placeholder="Optional notes/text log..."></textarea>
+            
+            <div class="flex gap-3">
+                <button onclick="closeModal('progress-modal')" class="flex-1 py-3 bg-slate-800 rounded-2xl text-white font-bold transition active:scale-95">Cancel</button>
+                <button onclick="saveProgress()" class="flex-1 py-3 bg-brand-info hover:bg-purple-500 rounded-2xl text-white font-black transition shadow-lg shadow-purple-500/30 active:scale-95">Save Log</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Profile Modal -->
+    <div id="staff-profile-modal" class="fixed inset-0 z-[90] hidden flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-sm rounded-[2rem] flex flex-col slide-up shadow-2xl relative overflow-hidden border border-brand-primary/30">
+            <div class="p-6 border-b border-slate-800 bg-slate-900/80 text-center relative">
+                <button onclick="closeModal('staff-profile-modal')" class="absolute right-5 top-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition"><i class="ph ph-x"></i></button>
+                <div class="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-brand-primary to-blue-900 flex items-center justify-center text-4xl font-black text-white shadow-neon-blue mx-auto mb-4 border-2 border-white/10" id="sp-avatar">M</div>
+                <h3 class="text-2xl font-black tracking-tight text-white" id="sp-name">Staff Name</h3>
+                <p class="text-sm text-brand-secondary font-bold mt-1 font-mono tracking-widest" id="sp-mobile">Mobile</p>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-5">
+                <div class="flex justify-between items-center p-5 bg-gradient-to-r from-brand-success/20 to-brand-success/5 border border-brand-success/30 rounded-2xl shadow-panel">
+                    <span class="text-brand-success font-black uppercase tracking-widest text-[10px]">Total Earnings</span>
+                    <span class="text-3xl font-black text-white" id="sp-earnings">₹0.00</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700 text-center">
+                        <p class="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Total Tasks</p>
+                        <p class="text-2xl font-black text-white" id="sp-total">0</p>
+                    </div>
+                    <div class="bg-brand-danger/10 p-4 rounded-2xl border border-brand-danger/20 text-center">
+                        <p class="text-[10px] text-brand-danger uppercase font-black tracking-widest mb-1">Urgent Done</p>
+                        <p class="text-2xl font-black text-white" id="sp-urgent">0</p>
+                    </div>
+                </div>
+                <div class="space-y-3 pt-2">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-black mb-2 px-1">Task Status Breakdown</p>
+                    <div class="flex justify-between items-center bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-sm font-bold text-slate-300 flex items-center gap-2"><i class="ph ph-check-circle text-brand-success text-xl"></i> Completed</span>
+                        <span class="font-black text-xl text-white" id="sp-completed">0</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-sm font-bold text-slate-300 flex items-center gap-2"><i class="ph ph-spinner-gap text-brand-secondary text-xl"></i> In Progress</span>
+                        <span class="font-black text-xl text-white" id="sp-progress">0</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                        <span class="text-sm font-bold text-slate-300 flex items-center gap-2"><i class="ph ph-clock text-warning text-xl"></i> Pending</span>
+                        <span class="font-black text-xl text-white" id="sp-pending">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login View -->
+    <div id="login-view" class="flex items-center justify-center min-h-screen p-4 absolute inset-0 z-[80] bg-brand-bg w-full h-full">
+        <div class="absolute w-96 h-96 bg-brand-primary/20 rounded-full blur-[120px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="glass-panel w-full max-w-md p-8 md:p-10 rounded-[2rem] z-10 border-t-brand-primary/40 shadow-neon-blue">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary to-blue-800 text-white mb-6 shadow-lg shadow-blue-500/30">
+                    <i class="ph ph-buildings text-4xl"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-white mb-2 uppercase">NEW DADA BHAI <span class="text-brand-primary block text-3xl">BUILDERS</span></h1>
+                <p class="text-gray-400 text-sm font-medium">Professional Logistics Manager (Live)</p>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Security Credential</label>
+                    <div class="relative group">
+                        <i class="ph ph-lock-key absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl transition group-focus-within:text-brand-primary"></i>
+                        <input type="password" id="login-input" required placeholder="Admin Pass / Staff Mobile" class="glass-input w-full pl-12 pr-4 py-4 rounded-2xl font-bold text-lg">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-brand-primary hover:bg-blue-600 text-white font-bold py-4 rounded-2xl transition flex items-center justify-center gap-2 shadow-neon-blue transform active:scale-95">
+                    <span>Secure Login</span><i class="ph ph-arrow-right text-xl"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Main View -->
+    <div id="app-view" class="hidden flex-col md:flex-row w-full h-full absolute inset-0 z-40 bg-brand-bg">
+        
+        <!-- Sidebar -->
+        <aside class="hidden md:flex flex-col w-[18rem] bg-brand-panel border-r border-brand-border z-20">
+            <div class="p-8 flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brand-primary flex items-center justify-center text-white shadow-lg shadow-blue-500/20"><i class="ph ph-buildings text-xl"></i></div>
+                <h2 class="text-xl font-extrabold tracking-tight leading-tight uppercase">NEW DADA BHAI <span class="text-brand-primary block">BUILDERS</span></h2>
+            </div>
+            <div class="px-6 pb-6">
+                <div class="p-4 rounded-2xl bg-slate-800/50 border border-slate-700 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center border border-slate-600"><i class="ph ph-user text-xl text-brand-primary"></i></div>
+                    <div>
+                        <p class="text-sm font-bold text-white" id="sidebar-user-name">User</p>
+                        <p class="text-xs text-brand-secondary font-bold tracking-wider uppercase mt-0.5" id="sidebar-user-role">Role</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 space-y-2 mt-2" id="desktop-nav"></nav>
+            <div class="p-6 mt-auto">
+                <button onclick="toggleZoom()" class="w-full flex items-center justify-center gap-3 px-4 py-4 mb-2 rounded-2xl bg-slate-800 text-white hover:bg-slate-700 transition font-bold border border-slate-700">
+                    <i class="ph ph-magnifying-glass-plus text-xl text-brand-success"></i>
+                    <span>Text Size (+/-)</span>
+                </button>
+                <button onclick="toggleLanguage()" class="w-full flex items-center justify-center gap-3 px-4 py-4 mb-2 rounded-2xl bg-slate-800 text-white hover:bg-slate-700 transition font-bold border border-slate-700">
+                    <i class="ph ph-translate text-xl text-brand-secondary"></i>
+                    <span>Language (<span class="lang-btn-text">ENG</span>)</span>
+                </button>
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-3 px-4 py-4 rounded-2xl text-slate-400 hover:text-white hover:bg-red-500/10 hover:border-red-500/30 border border-transparent transition font-bold">
+                    <i class="ph ph-power text-xl text-red-500"></i><span>Secure Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full relative z-10">
+            <!-- Mobile Header -->
+            <header class="md:hidden glass-panel px-5 py-4 flex items-center justify-between sticky top-0 z-30 rounded-none border-t-0 border-l-0 border-r-0 border-b-brand-border">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center text-white"><i class="ph ph-buildings text-lg"></i></div>
+                    <h2 class="text-lg font-extrabold truncate uppercase">NEW DADA BHAI</h2>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleZoom()" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-brand-success active:bg-slate-700 transition">
+                        <i class="ph ph-magnifying-glass-plus text-lg"></i>
+                    </button>
+                    <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-brand-secondary active:bg-slate-700 font-black text-xs">
+                        <span class="lang-btn-text">ENG</span>
+                    </button>
+                    <button onclick="logout()" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-red-400 active:bg-slate-700">
+                        <i class="ph ph-power text-lg"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-5 md:p-8 pb-24 md:pb-8 scroll-smooth" id="pages-container">
+                
+                <!-- Dashboard -->
+                <div id="page-dashboard" class="page-view hidden">
+                    <div class="flex justify-between items-end mb-8">
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Overview</h2>
+                            <p class="text-slate-400 text-base mt-1 font-medium">Real-time business analytics</p>
+                        </div>
+                        <button onclick="exportDataCSV()" class="admin-only hidden md:flex items-center gap-2 text-sm font-bold bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl border border-slate-700 transition">
+                            <i class="ph ph-download-simple"></i> Export CSV
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 hidden" id="dashboard-stats-admin"></div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 hidden" id="dashboard-stats-staff"></div>
+                    <div class="mt-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold tracking-tight">Recent Activity</h3>
+                            <button onclick="navigate('tasks')" class="text-base text-brand-primary font-bold hover:underline">View All Tasks</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="recent-tasks-container"></div>
+                    </div>
+                </div>
+
+                <!-- Staff -->
+                <div id="page-staff" class="page-view hidden">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Team Members</h2>
+                            <p class="text-slate-400 text-base mt-1 font-medium">Manage your delivery network</p>
+                        </div>
+                        <button onclick="openModal('staff-modal')" class="bg-brand-primary hover:bg-blue-600 text-white px-6 py-3 rounded-2xl flex items-center justify-center gap-2 font-bold transition shadow-neon-blue transform active:scale-95">
+                            <i class="ph ph-user-plus text-xl"></i> <span>Add Staff</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="staff-list-container"></div>
+                </div>
+
+                <!-- Tasks -->
+                <div id="page-tasks" class="page-view hidden">
+                    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 mb-8">
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Deliveries</h2>
+                            <p class="text-slate-400 text-base mt-1 font-medium">Track and manage task pipeline (Live)</p>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full xl:w-auto">
+                            <div class="relative w-full md:w-64">
+                                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                                <input type="text" id="task-search" oninput="loadTasks()" placeholder="Search Name or Phone..." class="glass-input w-full pl-11 pr-4 py-3 rounded-2xl font-medium text-base">
+                            </div>
+                            <select id="task-filter" onchange="loadTasks()" class="glass-input w-full md:w-auto px-4 py-3 rounded-2xl font-bold text-base cursor-pointer appearance-none">
+                                <option value="all">All Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="today">Today's Tasks</option>
+                                <option value="bin" class="admin-only">Recycle Bin</option>
+                            </select>
+                            <button onclick="openTaskModal()" class="admin-only bg-brand-primary hover:bg-blue-600 text-white px-6 py-3 rounded-2xl flex items-center justify-center gap-2 font-bold shadow-neon-blue transition transform active:scale-95 whitespace-nowrap">
+                                <i class="ph ph-plus text-xl"></i> <span>Create Task</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="task-list-container"></div>
+                </div>
+
+                <!-- Settings -->
+                <div id="page-settings" class="page-view hidden">
+                    <div class="mb-8">
+                        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Dynamic Rates</h2>
+                        <p class="text-slate-400 text-base mt-1 font-medium">Configure items for automatic commission calculation</p>
+                    </div>
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                        <div class="xl:col-span-1">
+                            <div class="glass-panel p-6 rounded-3xl border-t-brand-primary border-t-4">
+                                <h3 class="text-xl font-bold mb-5 flex items-center gap-2"><i class="ph ph-plus-circle text-brand-primary text-2xl"></i> Add Product</h3>
+                                <form id="form-custom-rate" onsubmit="addCustomRate(event)" class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Item Keyword (English)</label>
+                                            <input type="text" id="rate-keyword" required placeholder="e.g. Ultratech" class="glass-input w-full px-4 py-3.5 rounded-xl text-base" autocomplete="off">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Bengali Name</label>
+                                            <input type="text" id="rate-bengali" placeholder="e.g. আল্ট্রাটেক" class="glass-input w-full px-4 py-3.5 rounded-xl text-base" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Unit</label>
+                                            <input type="text" id="rate-unit" required placeholder="bag, kg, cft, pc" class="glass-input w-full px-4 py-3.5 rounded-xl text-base">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Rate (₹)</label>
+                                            <input type="number" step="0.01" id="rate-amount" required placeholder="5.00" class="glass-input w-full px-4 py-3.5 rounded-xl text-base">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full bg-white text-black hover:bg-slate-200 font-bold py-4 rounded-xl transition mt-2 text-lg">Save Product</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="xl:col-span-2">
+                            <div class="glass-panel p-6 rounded-3xl min-h-[300px]">
+                                <h3 class="text-xl font-bold mb-5 flex items-center gap-2"><i class="ph ph-list-dashes text-slate-400 text-2xl"></i> Active Configs</h3>
+                                <div id="custom-rates-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <nav class="md:hidden mobile-bottom-nav fixed bottom-0 left-0 w-full flex justify-around items-center z-40 pb-safe shadow-[0_-10px_20px_rgba(0,0,0,0.5)]" id="mobile-nav"></nav>
+        </main>
+    </div>
+
+    <!-- Modals for Creation & Viewing -->
+    <div id="staff-modal" class="fixed inset-0 z-[60] hidden items-end md:items-center justify-center p-0 md:p-4 bg-black/70 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-md rounded-t-[2rem] md:rounded-[2rem] flex flex-col slide-up border-t border-brand-border md:border">
+            <div class="p-6 border-b border-brand-border flex justify-between items-center">
+                <h3 class="text-xl font-bold tracking-tight">Add Team Member</h3>
+                <button onclick="closeModal('staff-modal')" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 transition"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-6">
+                <form id="form-staff" onsubmit="saveStaff(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Staff Full Name</label>
+                        <input type="text" id="staff-name" required class="glass-input w-full px-4 py-4 rounded-2xl font-bold text-lg" placeholder="e.g. Ramesh Kumar">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">10-Digit Mobile Number</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-black">+91</span>
+                            <input type="tel" id="staff-mobile" required pattern="[0-9]{10}" class="glass-input w-full pl-14 pr-4 py-4 rounded-2xl font-bold tracking-widest text-lg" placeholder="9876543210">
+                        </div>
+                    </div>
+                    <div class="pt-2 pb-6 md:pb-0">
+                        <button type="submit" class="w-full py-4 rounded-2xl bg-brand-primary hover:bg-blue-600 text-white font-bold transition shadow-neon-blue text-lg">Create Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="task-modal" class="fixed inset-0 z-[60] hidden items-end md:items-center justify-center p-0 md:p-4 bg-black/70 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-2xl rounded-t-[2rem] md:rounded-[2rem] flex flex-col max-h-[95vh] slide-up border-t border-brand-primary/30 md:border">
+            <div class="p-5 md:p-6 border-b border-brand-border flex justify-between items-center bg-slate-800/30 rounded-t-[2rem]">
+                <h3 class="text-xl font-bold tracking-tight flex items-center gap-2 text-white" id="task-modal-title">Create Task</h3>
+                <button onclick="closeModal('task-modal')" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 transition"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            <div class="p-5 md:p-6 overflow-y-auto flex-1 custom-scrollbar">
+                <form id="form-task" onsubmit="saveTask(event)" class="space-y-6">
+                    <input type="hidden" id="task-id">
+                    <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i class="ph ph-user-circle"></i> Customer Details</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input type="text" id="task-customer" required class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Name">
+                            <input type="tel" id="task-mobile" required class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Mobile Number">
+                        </div>
+                        <input type="text" id="task-address" required class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Full Delivery Address">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-end mb-2">
+                            <label class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"><i class="ph ph-package"></i> Items (One per line)</label>
+                            <span class="text-[10px] bg-brand-primary/20 text-brand-secondary px-2 py-1 rounded font-black uppercase tracking-wider flex items-center gap-1 border border-brand-primary/30 shadow-neon-blue"><i class="ph ph-magic-wand"></i> AI Parser</span>
+                        </div>
+                        <textarea id="task-desc" required rows="4" class="glass-input w-full px-4 py-4 rounded-2xl resize-none font-mono text-base font-bold leading-relaxed" placeholder="Example:&#10;Sand 100&#10;8mm 50kg&#10;Ultratech 20 bag"></textarea>
+                        <div id="parse-preview-container" class="mt-3 p-4 rounded-2xl bg-black/40 border border-slate-800 hidden">
+                            <div id="parse-preview-list" class="space-y-2 mb-3"></div>
+                            <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Est. Commission</span>
+                                <span id="parse-preview-total" class="text-2xl font-black text-brand-success">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Priority</label>
+                            <select id="task-category" class="glass-input w-full px-4 py-4 rounded-xl text-base font-bold">
+                                <option value="Normal">Normal Delivery</option>
+                                <option value="Urgent">Urgent Delivery</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Assign To</label>
+                            <select id="task-staff" required class="glass-input w-full px-4 py-4 rounded-xl text-base font-bold">
+                                <option value="" disabled selected>Select Staff</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pt-2 pb-6 md:pb-0">
+                        <button type="submit" class="w-full py-4 rounded-2xl bg-brand-primary hover:bg-blue-600 text-white font-extrabold transition shadow-neon-blue text-lg">Save Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Task Invoice Modal -->
+    <div id="view-task-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-md rounded-[2rem] flex flex-col max-h-[90vh] slide-up shadow-2xl relative overflow-hidden" id="receipt-container">
+            <div class="p-6 border-b border-slate-800 bg-slate-900/50 text-center relative">
+                <button onclick="closeModal('view-task-modal')" class="absolute right-5 top-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center no-print"><i class="ph ph-x"></i></button>
+                <div class="inline-flex mb-2 gap-2">
+                    <span id="view-task-badge" class="px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest hidden"></span>
+                    <span id="view-task-status" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border"></span>
+                </div>
+                <h3 class="text-3xl font-black tracking-tight mt-1" id="view-task-customer">Customer</h3>
+                <div class="flex items-center justify-center gap-3 mt-3 no-print" id="view-task-contact-actions"></div>
+                <p class="text-sm text-slate-400 font-bold mt-1 font-mono hidden print:block" id="view-task-mobile-print"></p>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 custom-scrollbar receipt-pattern">
+                <div class="text-center">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-black mb-1">Delivery Address</p>
+                    <p class="font-bold text-base" id="view-task-address"></p>
+                </div>
+                
+                <div class="border-t border-dashed border-slate-700"></div>
+                
+                <!-- Timeline Info -->
+                <div class="grid grid-cols-2 gap-3 bg-black/30 p-4 rounded-2xl border border-slate-800">
+                    <div>
+                        <p class="text-[9px] text-brand-secondary uppercase tracking-widest font-black flex items-center gap-1"><i class="ph ph-calendar-plus text-sm"></i> Created</p>
+                        <p class="text-xs font-bold text-slate-300 mt-1" id="view-task-date-created"></p>
+                    </div>
+                    <div class="text-right border-l border-slate-700 pl-3">
+                        <p class="text-[9px] text-brand-success uppercase tracking-widest font-black flex items-center justify-end gap-1"><i class="ph ph-check-circle text-sm"></i> Completed</p>
+                        <p class="text-xs font-bold text-brand-success mt-1" id="view-task-date-completed"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-black mb-3">Item Breakdown & Progress</p>
+                    <div id="view-task-items" class="space-y-4"></div>
+                </div>
+                
+                <div class="border-t border-dashed border-slate-700"></div>
+                
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest font-black mb-1">Assigned To</p>
+                        <p class="font-bold flex items-center gap-1 text-base"><i class="ph ph-user-circle text-brand-primary"></i> <span id="view-task-staff"></span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-brand-success uppercase tracking-widest font-black mb-1">Total Comm.</p>
+                        <p id="view-task-commission" class="text-3xl font-black text-brand-success leading-none"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-slate-800 bg-slate-900/80 flex gap-2 no-print" id="view-task-actions"></div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCRIPT: FIREBASE MODULE -->
+    <script type="module">
+        // Import Firebase Functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgjeKYJgdWan1QD57xiyHRHwH-GIbnwD4",
+            authDomain: "new-dada-bhai-buildrs.firebaseapp.com",
+            projectId: "new-dada-bhai-buildrs",
+            storageBucket: "new-dada-bhai-buildrs.firebasestorage.app",
+            messagingSenderId: "172613925223",
+            appId: "1:172613925223:web:7592f5184a6442595357c2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Constants and Globals
+        const ADMIN_PASS = '413613';
+        let currentUser = null; 
+        let currentView = 'dashboard';
+        let allStaffMap = {}; 
+
+        const defaultRates = [
+            { id: 1, keyword: 'sand', name: 'Sand', bengaliName: 'বালি', unit: 'cft', rate: 2 },
+            { id: 2, keyword: 'stone', name: 'Stone', bengaliName: 'পাথর', unit: 'cft', rate: 3 },
+            { id: 3, keyword: 'steel', name: 'Steel', bengaliName: 'রড', unit: 'kg', rate: 0.5 },
+            { id: 4, keyword: 'cement', name: 'Cement', bengaliName: 'সিমেন্ট', unit: 'bag', rate: 2 },
+            { id: 5, keyword: 'ultratech', name: 'Ultratech', bengaliName: 'আল্ট্রাটেক', unit: 'bag', rate: 3 }
+        ];
+
+        let customRates = JSON.parse(localStorage.getItem('bs_rates_live'));
+        if(!customRates || customRates.length === 0) {
+            customRates = defaultRates;
+            localStorage.setItem('bs_rates_live', JSON.stringify(customRates));
+        }
+
+        // --- NEW FIREBASE DB WRAPPER ---
+        const DB = {
+            addStaff: async (staff) => {
+                const staffRef = doc(db, 'staff', staff.mobile);
+                const docSnap = await getDoc(staffRef);
+                if(docSnap.exists()) throw new Error('Mobile number already exists.');
+                await setDoc(staffRef, staff);
+                allStaffMap[staff.mobile] = staff.name;
+            },
+            getStaff: async (m) => {
+                const docSnap = await getDoc(doc(db, 'staff', m));
+                return docSnap.exists() ? docSnap.data() : null;
+            },
+            getAllStaff: async () => {
+                const snapshot = await getDocs(collection(db, 'staff'));
+                const staffs = [];
+                snapshot.forEach(docSnap => {
+                    const s = docSnap.data();
+                    allStaffMap[s.mobile] = s.name;
+                    staffs.push(s);
+                });
+                return staffs;
+            },
+            saveTask: async (t) => {
+                if (t.id) {
+                    // Update existing Document
+                    const taskRef = doc(db, 'tasks', t.id);
+                    await updateDoc(taskRef, t);
+                    return t.id;
+                } else {
+                    // Create new Document
+                    const colRef = collection(db, 'tasks');
+                    const docRef = await addDoc(colRef, t);
+                    t.id = docRef.id;
+                    await updateDoc(docRef, { id: docRef.id }); 
+                    return docRef.id;
+                }
+            },
+            getTask: async (id) => {
+                if(!id) return null;
+                const docSnap = await getDoc(doc(db, 'tasks', id));
+                return docSnap.exists() ? docSnap.data() : null;
+            },
+            getAllTasks: async () => {
+                const snapshot = await getDocs(collection(db, 'tasks'));
+                const tasks = [];
+                snapshot.forEach(docSnap => tasks.push(docSnap.data()));
+                return tasks;
+            },
+            hardDeleteTask: async (id) => {
+                await deleteDoc(doc(db, 'tasks', id));
+            }
+        };
+
+        // --- UI UTILS ---
+        function showToast(msg, type = 'success') {
+            const cont = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icon = type === 'success' ? 'check-circle text-brand-success' : 'warning-circle text-brand-danger';
+            toast.className = `toast border-${type==='success'?'brand-success':'brand-danger'}/50 z-[9999]`;
+            toast.innerHTML = `<i class="ph ph-${icon} text-2xl"></i> <span class="text-sm text-white">${msg}</span>`;
+            cont.appendChild(toast);
+            setTimeout(() => toast.remove(), 3300);
+        }
+
+        function openModal(id) { const el = document.getElementById(id); el.classList.remove('hidden'); el.classList.add('flex'); }
+        function closeModal(id) { const el = document.getElementById(id); el.classList.add('hidden'); el.classList.remove('flex'); }
+        
+        let cb = null;
+        function showConfirm(t, m, func) { document.getElementById('confirm-title').innerText = t; document.getElementById('confirm-message').innerText = m; cb = func; openModal('confirm-modal'); }
+        function closeConfirmModal() { closeModal('confirm-modal'); cb = null; }
+        
+        // Attach listener for confirm button manually 
+        document.getElementById('confirm-btn').addEventListener('click', async () => { if(cb) await cb(); closeConfirmModal(); });
+
+        function formatMoney(amt) { return '₹' + parseFloat(amt).toFixed(2); }
+        function formatDate(ts) { 
+            if(!ts) return 'Not Yet';
+            return new Date(ts).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); 
+        }
+
+        function isToday(ts) {
+            if(!ts) return false;
+            const today = new Date();
+            const date = new Date(ts);
+            return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+        }
+
+        // --- NAVIGATION ---
+        function navigate(view) {
+            document.querySelectorAll('.page-view').forEach(e => e.classList.add('hidden'));
+            document.getElementById(`page-${view}`).classList.remove('hidden');
+            currentView = view;
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll(`.nav-${view}`).forEach(e => e.classList.add('active'));
+
+            if(view==='dashboard') loadDashboard();
+            if(view==='staff') loadStaff();
+            if(view==='settings') renderSettingsRates();
+            if(view==='tasks') { document.getElementById('task-filter').value='all'; document.getElementById('task-search').value=''; loadTasks(); }
+        }
+
+        function navigateTasks(filter) { navigate('tasks'); document.getElementById('task-filter').value = filter; loadTasks(); }
+
+        function buildNav() {
+            const isA = currentUser.role === 'admin';
+            document.getElementById('desktop-nav').innerHTML = `
+                <a onclick="navigate('dashboard')" class="nav-item nav-dashboard cursor-pointer flex items-center gap-4 px-4 py-4 rounded-2xl text-slate-400 font-bold hover:bg-slate-800/50"><i class="ph ph-squares-four text-2xl"></i> <span class="text-base">Dashboard</span></a>
+                ${isA ? `<a onclick="navigate('staff')" class="nav-item nav-staff cursor-pointer flex items-center gap-4 px-4 py-4 rounded-2xl text-slate-400 font-bold hover:bg-slate-800/50"><i class="ph ph-users text-2xl"></i> <span class="text-base">Team</span></a>
+                <a onclick="navigate('settings')" class="nav-item nav-settings cursor-pointer flex items-center gap-4 px-4 py-4 rounded-2xl text-slate-400 font-bold hover:bg-slate-800/50"><i class="ph ph-tag text-2xl"></i> <span class="text-base">Rates Config</span></a>` : ''}
+                <a onclick="navigate('tasks')" class="nav-item nav-tasks cursor-pointer flex items-center gap-4 px-4 py-4 rounded-2xl text-slate-400 font-bold hover:bg-slate-800/50"><i class="ph ph-clipboard-text text-2xl"></i> <span class="text-base">${isA?'All Deliveries':'My Tasks'}</span></a>`;
+            document.getElementById('mobile-nav').innerHTML = `
+                <a onclick="navigate('dashboard')" class="nav-item nav-dashboard cursor-pointer flex flex-col items-center justify-center w-full py-2 text-slate-400"><i class="ph ph-squares-four text-2xl mb-1 transition-transform"></i> <span class="text-[10px] uppercase font-bold tracking-wider">Home</span></a>
+                ${isA ? `<a onclick="navigate('staff')" class="nav-item nav-staff cursor-pointer flex flex-col items-center justify-center w-full py-2 text-slate-400"><i class="ph ph-users text-2xl mb-1 transition-transform"></i> <span class="text-[10px] uppercase font-bold tracking-wider">Staff</span></a>
+                <a onclick="navigate('settings')" class="nav-item nav-settings cursor-pointer flex flex-col items-center justify-center w-full py-2 text-slate-400"><i class="ph ph-tag text-2xl mb-1 transition-transform"></i> <span class="text-[10px] uppercase font-bold tracking-wider">Rates</span></a>` : ''}
+                <a onclick="navigate('tasks')" class="nav-item nav-tasks cursor-pointer flex flex-col items-center justify-center w-full py-2 text-slate-400"><i class="ph ph-clipboard-text text-2xl mb-1 transition-transform"></i> <span class="text-[10px] uppercase font-bold tracking-wider">Tasks</span></a>`;
+            document.querySelectorAll('.admin-only').forEach(e => e.style.display = isA?'':'none');
+            document.getElementById('sidebar-user-name').innerText = isA?'Admin':currentUser.name;
+            document.getElementById('sidebar-user-role').innerText = isA?'Administrator':`ID: ${currentUser.id}`;
+        }
+
+        // --- AUTH ---
+        async function handleLogin(e) {
+            e.preventDefault(); const val = document.getElementById('login-input').value.trim();
+            if(val === ADMIN_PASS) { currentUser = { role:'admin', id:'admin', name:'Administrator' }; localStorage.setItem('bs_u_live', JSON.stringify(currentUser)); initApp(); }
+            else {
+                try { const s = await DB.getStaff(val); if(s) { currentUser = { role:'staff', id:s.mobile, name:s.name }; localStorage.setItem('bs_u_live', JSON.stringify(currentUser)); initApp(); } else showToast('Invalid credentials', 'error'); } 
+                catch(e) { showToast('Error in login', 'error'); }
+            }
+        }
+
+        function logout() { 
+            localStorage.removeItem('bs_u_live'); currentUser = null; 
+            document.getElementById('app-view').classList.add('hidden'); document.getElementById('app-view').classList.remove('flex'); 
+            document.getElementById('login-view').classList.remove('hidden'); document.getElementById('login-view').classList.add('flex'); 
+            document.getElementById('login-input').value = ''; 
+        }
+        
+        async function initApp() {
+            document.getElementById('login-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('flex');
+            document.getElementById('app-view').classList.remove('hidden'); document.getElementById('app-view').classList.add('flex');
+            await DB.getAllStaff(); buildNav(); navigate('dashboard'); if(currentUser.role==='admin') popStaff();
+        }
+
+        // --- ZOOM LOGIC ---
+        let currentZoom = parseInt(localStorage.getItem('ndbb_zoom_live')) || 16;
+        function applyZoom() { document.documentElement.style.fontSize = currentZoom + 'px'; }
+        function toggleZoom() { currentZoom = currentZoom === 16 ? 18 : currentZoom === 18 ? 20 : 16; localStorage.setItem('ndbb_zoom_live', currentZoom); applyZoom(); showToast(currentAppLang === 'bn' ? 'অক্ষর সাইজ পরিবর্তন হয়েছে!' : 'Text size updated!'); }
+        applyZoom();
+
+        // --- RATE CONFIG LOGIC ---
+        function addCustomRate(e) {
+            e.preventDefault();
+            const kw = document.getElementById('rate-keyword').value.trim().toLowerCase();
+            const bnName = document.getElementById('rate-bengali').value.trim();
+            const unit = document.getElementById('rate-unit').value.trim().toLowerCase();
+            const amt = parseFloat(document.getElementById('rate-amount').value);
+            if(!kw || !unit || isNaN(amt)) return;
+            const exIdx = customRates.findIndex(r => r.keyword === kw);
+            if(exIdx > -1) { customRates[exIdx] = { ...customRates[exIdx], unit, rate: amt, bengaliName: bnName }; showToast('Product updated'); } 
+            else { customRates.push({ id: Date.now(), keyword: kw, name: kw.charAt(0).toUpperCase() + kw.slice(1), bengaliName: bnName, unit, rate: amt }); showToast('Product added'); }
+            localStorage.setItem('bs_rates_live', JSON.stringify(customRates)); document.getElementById('form-custom-rate').reset(); renderSettingsRates();
+        }
+
+        function deleteCustomRate(id) { customRates = customRates.filter(r => r.id !== id); localStorage.setItem('bs_rates_live', JSON.stringify(customRates)); showToast('Product removed'); renderSettingsRates(); }
+
+        function renderSettingsRates() {
+            const cont = document.getElementById('custom-rates-list');
+            if(customRates.length === 0) { cont.innerHTML = `<p class="text-slate-500 text-sm">No rates configured.</p>`; return; }
+            cont.innerHTML = customRates.map(r => `
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex justify-between items-center group hover:border-brand-primary/50 transition">
+                    <div><p class="font-bold text-white capitalize text-lg">${currentAppLang === 'bn' && r.bengaliName ? r.bengaliName : r.name}</p><p class="text-[10px] text-brand-secondary font-mono uppercase tracking-widest bg-brand-primary/10 inline-block px-2 py-1 rounded mt-1">Key: ${r.keyword}</p></div>
+                    <div class="flex items-center gap-4"><div class="text-right"><p class="font-black text-brand-success text-xl">₹${r.rate}</p><p class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Per ${currentAppLang === 'bn' ? (getFullDict()[r.unit] || r.unit) : r.unit}</p></div><button onclick="deleteCustomRate(${r.id})" class="w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-50 hover:opacity-100 transition"><i class="ph ph-trash"></i></button></div>
+                </div>`).join('');
+        }
+
+        // --- AI PARSER LOGIC ---
+        function parseDesc(text) {
+            const lines = text.split('\n').map(l=>l.trim()).filter(l=>l);
+            let items = [], total = 0;
+
+            const parserDict = { 
+                'বালি':'sand', 'bali':'sand', 'পাথর':'stone', 'pathor':'stone', 'chips':'stone', 
+                'রড':'steel', 'rod':'steel', 'tmt':'steel', 'সিমেন্ট':'cement', 'cemant':'cement', 
+                'বস্তা':'bag', 'basta':'bag', 'ব্যাগ':'bag', 'কেজি':'kg', 'ফুট':'cft', 'পিস':'pc', 'টা':'pc' 
+            };
+            customRates.forEach(r => { if(r.bengaliName) parserDict[r.bengaliName] = r.keyword; });
+
+            lines.forEach(line => {
+                let processLine = line.replace(/[০-৯]/g, d => "০১২৩৪৫৬৭৮৯".indexOf(d));
+                let lower = processLine.toLowerCase();
+                for(let key in parserDict) { lower = lower.replace(new RegExp(key, "gi"), parserDict[key]); }
+
+                let textForQty = lower.replace(/\(?\d+\/\d+\)?/g, '').replace(/\d+\s*["']/g, '').replace(/\b\d+\s*(mm|cm|inch)\b/gi, '');
+                let qtyMatch = textForQty.match(/[\d.]+/);
+                let qty = qtyMatch ? parseFloat(qtyMatch[0]) : 0;
+                if(qty === 0) return;
+
+                let explicitUnit = null;
+                if (lower.match(/\b(bag|bags)\b/)) explicitUnit = 'bag';
+                else if (lower.match(/\b(kg|kgs)\b/)) explicitUnit = 'kg';
+                else if (lower.match(/\b(ton|tons)\b/)) explicitUnit = 'ton';
+                else if (lower.match(/\b(cft|feet|ft)\b/)) explicitUnit = 'cft';
+                else if (lower.match(/\b(pc|pcs|piece|pieces)\b/)) explicitUnit = 'pc';
+
+                let lineNoSpace = lower.replace(/\s+/g, '');
+                let sortedRates = [...customRates].sort((a,b) => b.keyword.length - a.keyword.length);
+                let matchedRates = sortedRates.filter(r => lineNoSpace.includes(r.keyword.replace(/\s+/g, '')));
+                
+                let bestMatch = null;
+                if (matchedRates.length > 0) {
+                    if (explicitUnit) bestMatch = matchedRates.find(r => r.unit === explicitUnit);
+                    if (!bestMatch) bestMatch = matchedRates[0];
+                }
+
+                if (bestMatch) {
+                    let finalUnit = explicitUnit || bestMatch.unit;
+                    let normalize = (u) => u.replace(/s$/, '').replace('ft', 'feet').replace('cft', 'feet');
+                    let isMatched = false, rate = 0, comm = 0;
+                    if (normalize(finalUnit) === normalize(bestMatch.unit)) { rate = bestMatch.rate; comm = qty * rate; isMatched = true; } 
+                    else if (!explicitUnit) { finalUnit = bestMatch.unit; rate = bestMatch.rate; comm = qty * rate; isMatched = true; }
+                    total += comm;
+                    items.push({ raw: line, name: bestMatch.name, qty: qty, deliveredQty: 0, unit: finalUnit, commission: comm, rate: rate, matched: isMatched });
+                } else {
+                    let finalUnit = explicitUnit || 'unit';
+                    let name = line.replace(/[\d.]+/g, '').replace(/kg|feet|cft|bag|ton|pc|bags|kgs|tons|ft|pcs|piece|pieces|inch|mm|cm|["']/ig, '').replace(/\(?\/\)?/g, '').trim() || 'Item';
+                    items.push({ raw: line, name: name, qty: qty, deliveredQty: 0, unit: finalUnit, commission: 0, rate: 0, matched: false });
+                }
+            });
+            return { items, total };
+        }
+
+        document.getElementById('task-desc').addEventListener('input', function() {
+            const val = this.value; const cont = document.getElementById('parse-preview-container'); const list = document.getElementById('parse-preview-list');
+            if(!val.trim()) { cont.classList.add('hidden'); return; }
+            cont.classList.remove('hidden');
+            const p = parseDesc(val);
+            if(p.items.length===0) { list.innerHTML=`<p class="text-base text-slate-500 font-bold">${currentAppLang==='bn'?'সঠিক পরিমাণের জন্য অপেক্ষা করা হচ্ছে...':'Waiting for valid quantity...'}</p>`; document.getElementById('parse-preview-total').innerText='₹0.00'; return; }
+            const activeDict = getFullDict();
+            list.innerHTML = p.items.map(i => {
+                let dName = currentAppLang === 'bn' ? (activeDict[i.name] || i.name) : i.name;
+                let dUnit = currentAppLang === 'bn' ? (activeDict[i.unit] || i.unit) : i.unit;
+                return `
+                <div class="flex justify-between items-center text-base p-4 rounded-xl border ${i.matched?'border-brand-primary/30 bg-brand-primary/10':'border-slate-800 bg-slate-900'}">
+                    <div><span class="font-black text-white px-3 py-1 bg-black/40 rounded-lg mr-2 text-sm">${i.qty} ${dUnit}</span><span class="text-slate-200 capitalize font-bold">${dName}</span></div>
+                    <div class="text-right">${i.matched ? `<div class="text-brand-success font-black">+ ₹${i.commission.toFixed(2)}</div>` : `<span class="text-slate-500 text-xs font-bold uppercase tracking-wider">${currentAppLang==='bn'?'রেট নেই':'No Rate'}</span>`}</div>
+                </div>`
+            }).join('');
+            document.getElementById('parse-preview-total').innerText = formatMoney(p.total);
+        });
+
+        // --- TASK SAVE LOGIC (FIREBASE COMPATIBLE) ---
+        async function saveTask(e) {
+            e.preventDefault();
+            const id = document.getElementById('task-id').value; // Now treated as String
+            const isEdit = !!id;
+            
+            const pd = parseDesc(document.getElementById('task-desc').value);
+            
+            let existing = null;
+            if(isEdit) {
+                existing = await DB.getTask(id);
+            }
+            
+            // Critical Fix: Preserve deliveredQty during text edits
+            if (existing && existing.parsedItems && pd.items.length > 0) {
+                pd.items.forEach(newItem => {
+                    let oldItem = existing.parsedItems.find(i => i.name === newItem.name);
+                    if (oldItem && oldItem.deliveredQty) {
+                        newItem.deliveredQty = oldItem.deliveredQty;
+                    }
+                });
+            }
+
+            const task = {
+                customerName: document.getElementById('task-customer').value.trim(),
+                customerMobile: document.getElementById('task-mobile').value.trim(),
+                customerAddress: document.getElementById('task-address').value.trim(),
+                rawDescription: document.getElementById('task-desc').value.trim(),
+                parsedItems: pd.items,
+                totalCommission: pd.total,
+                category: document.getElementById('task-category').value,
+                staffMobile: document.getElementById('task-staff').value,
+                status: existing ? existing.status : 'Pending',
+                deleted: existing ? existing.deleted : false,
+                createdAt: existing ? existing.createdAt : Date.now(),
+                updatedAt: Date.now(),
+                completedAt: existing ? existing.completedAt : null,
+                logs: existing ? (existing.logs || []) : []
+            };
+
+            if (isEdit) {
+                task.id = id; // Ensure string ID is preserved
+            }
+
+            try {
+                await DB.saveTask(task);
+                showToast('Task saved successfully');
+                closeModal('task-modal');
+                e.target.reset();
+                loadTasks();
+                loadDashboard();
+            } catch (err) {
+                console.error(err);
+                showToast('Error saving task', 'error');
+            }
+        }
+
+        // --- DASHBOARD LOGIC ---
+        async function loadDashboard() {
+            const tasks = await DB.getAllTasks(); const isA = currentUser.role==='admin';
+            let st = { p:0, prog:0, u:0, c:0, ts:Object.keys(allStaffMap).length, tp:0, my:0, todayT: 0 };
+            let rec = [];
+
+            document.getElementById('dashboard-stats-admin').classList.add('hidden');
+            document.getElementById('dashboard-stats-staff').classList.add('hidden');
+
+            if(isA) {
+                document.getElementById('dashboard-stats-admin').classList.remove('hidden');
+                tasks.forEach(t=>{ 
+                    if(!t.deleted){ 
+                        if(isToday(t.createdAt)) st.todayT++;
+                        if(t.status==='Pending') { st.p++; if(t.category==='Urgent') st.u++; }
+                        if(t.status==='In Progress') st.prog++;
+                        if(t.status==='Completed'){ st.c++; st.tp+=(t.totalCommission||0); } 
+                    } 
+                });
+                rec = tasks.filter(t=>!t.deleted).sort((a,b)=>b.createdAt-a.createdAt).slice(0,4); // Sort by time, not ID
+                document.getElementById('dashboard-stats-admin').innerHTML = `
+                    <div onclick="navigateTasks('today')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-primary/50 transition group shadow-panel"><div class="w-12 h-12 rounded-2xl bg-brand-primary/20 text-brand-primary flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-neon-blue"><i class="ph ph-calendar-star text-2xl"></i></div><p class="text-4xl font-black">${st.todayT}</p><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Today's Tasks</p></div>
+                    <div onclick="navigateTasks('pending')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-warning/50 transition group shadow-panel"><div class="w-12 h-12 rounded-2xl bg-warning/20 text-warning flex items-center justify-center mb-4 group-hover:scale-110 transition"><i class="ph ph-clock text-2xl"></i></div><p class="text-4xl font-black">${st.p}</p><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pending</p></div>
+                    <div onclick="navigateTasks('in_progress')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-info/50 transition group shadow-panel"><div class="w-12 h-12 rounded-2xl bg-brand-info/20 text-brand-info flex items-center justify-center mb-4 group-hover:scale-110 transition"><i class="ph ph-spinner-gap text-2xl animate-spin"></i></div><p class="text-4xl font-black">${st.prog}</p><p class="text-[10px] text-brand-info font-bold uppercase tracking-widest mt-1">In Progress</p></div>
+                    <div onclick="navigateTasks('urgent')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-danger/50 transition group shadow-panel"><div class="w-12 h-12 rounded-2xl bg-brand-danger/20 text-brand-danger flex items-center justify-center mb-4 group-hover:scale-110 transition"><i class="ph ph-warning-circle text-2xl"></i></div><p class="text-4xl font-black">${st.u}</p><p class="text-[10px] text-brand-danger font-bold uppercase tracking-widest mt-1">Urgent</p></div>
+                `;
+            } else {
+                document.getElementById('dashboard-stats-staff').classList.remove('hidden');
+                const mt = tasks.filter(t=>t.staffMobile===currentUser.id && !t.deleted);
+                mt.forEach(t=>{ 
+                    if(isToday(t.createdAt)) st.todayT++;
+                    if(t.status==='Pending') { st.p++; if(t.category==='Urgent') st.u++; }
+                    if(t.status==='In Progress') st.prog++;
+                    if(t.status==='Completed'){ st.c++; st.my+=(t.totalCommission||0); } 
+                });
+                rec = mt.sort((a,b)=>b.createdAt-a.createdAt).slice(0,3);
+                document.getElementById('dashboard-stats-staff').innerHTML = `
+                    <div onclick="navigateTasks('pending')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-warning/50 transition shadow-panel"><p class="text-[10px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Pending</p><p class="text-4xl font-black text-warning">${st.p}</p></div>
+                    <div onclick="navigateTasks('in_progress')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-info/50 transition shadow-panel"><p class="text-[10px] text-brand-info font-bold uppercase mb-2 tracking-widest">In Progress</p><p class="text-4xl font-black text-brand-info">${st.prog}</p></div>
+                    <div onclick="navigateTasks('urgent')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-danger/50 transition shadow-panel"><p class="text-[10px] text-brand-danger font-bold uppercase mb-2 tracking-widest">Urgent</p><p class="text-4xl font-black text-brand-danger">${st.u}</p></div>
+                    <div onclick="navigateTasks('completed')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-success/50 transition shadow-panel"><p class="text-[10px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Completed</p><p class="text-4xl font-black">${st.c}</p></div>
+                    <div class="glass-panel p-8 rounded-3xl border-brand-success/40 bg-gradient-to-br from-emerald-900/40 to-transparent col-span-2 shadow-panel flex flex-col justify-center">
+                        <p class="text-brand-success text-xs font-black uppercase tracking-widest mb-2 flex items-center gap-1"><i class="ph ph-wallet text-xl"></i> Total Earnings</p>
+                        <p class="text-4xl md:text-5xl font-black text-white">${formatMoney(st.my)}</p>
+                    </div>`;
+            }
+            renderTCards(rec, 'recent-tasks-container');
+        }
+
+        async function exportDataCSV() {
+            const tasks = await DB.getAllTasks();
+            let csv = "ID,Customer Name,Mobile,Address,Items Description,Priority,Status,Staff Mobile,Total Commission,Date Created,Date Completed\n";
+            tasks.forEach(t => {
+                if(!t.deleted) {
+                    let desc = t.rawDescription.replace(/\n/g, ' | ').replace(/,/g, ' ');
+                    csv += `${t.id},${t.customerName},${t.customerMobile},${t.customerAddress},${desc},${t.category},${t.status},${t.staffMobile},${t.totalCommission || 0},${formatDate(t.createdAt)},${formatDate(t.completedAt)}\n`;
+                }
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.setAttribute('href', url); a.setAttribute('download', 'NEW_DADA_BHAI_Tasks.csv'); a.click();
+        }
+
+        // --- STAFF LOGIC ---
+        async function popStaff() { const l=await DB.getAllStaff(); document.getElementById('task-staff').innerHTML='<option value="" disabled selected>Select Staff</option>'+l.map(s=>`<option value="${s.mobile}">${s.name}</option>`).join(''); }
+        async function loadStaff() {
+            if(currentUser.role!=='admin') return;
+            const l=await DB.getAllStaff(); const ts=await DB.getAllTasks();
+            let sm={}; l.forEach(s=>sm[s.mobile]={t:0, c:0, e:0});
+            ts.forEach(t=>{ if(!t.deleted && sm[t.staffMobile]){ sm[t.staffMobile].t++; if(t.status==='Completed'){ sm[t.staffMobile].c++; sm[t.staffMobile].e+=(t.totalCommission||0); } } });
+            document.getElementById('staff-list-container').innerHTML = l.map(s=>`
+                <div onclick="viewStaffProfile('${s.mobile}')" class="glass-panel p-6 rounded-3xl flex flex-col group hover:border-brand-primary/40 transition shadow-panel cursor-pointer">
+                    <div class="flex items-center gap-4 mb-6"><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-800 to-black border border-slate-700 flex items-center justify-center text-2xl font-black text-white shadow-inner group-hover:scale-105 transition">${s.name[0].toUpperCase()}</div><div><h3 class="text-xl font-bold group-hover:text-brand-primary transition">${s.name}</h3><p class="text-base text-slate-400 font-mono mt-0.5">${s.mobile}</p></div></div>
+                    <div class="mt-auto grid grid-cols-2 gap-3"><div class="bg-black/40 p-4 rounded-2xl border border-slate-800"><p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Tasks</p><p class="text-2xl font-black">${sm[s.mobile].c}/${sm[s.mobile].t}</p></div><div class="bg-brand-success/10 p-4 rounded-2xl border border-brand-success/30"><p class="text-[10px] text-brand-success font-bold uppercase tracking-widest mb-1">Earned</p><p class="text-2xl font-black text-white">${formatMoney(sm[s.mobile].e)}</p></div></div>
+                </div>`).join('');
+        }
+
+        async function viewStaffProfile(mobile) {
+            const staff = await DB.getStaff(mobile); if(!staff) return;
+            const tasks = await DB.getAllTasks();
+            let st = { tot:0, c:0, p:0, prog:0, urgC:0, earn:0 };
+            tasks.forEach(t => { if(!t.deleted && t.staffMobile === mobile) { st.tot++; if(t.status === 'Completed') { st.c++; st.earn += (t.totalCommission || 0); if(t.category === 'Urgent') st.urgC++; } else if(t.status === 'In Progress') st.prog++; else st.p++; } });
+            document.getElementById('sp-avatar').innerText = staff.name[0].toUpperCase(); document.getElementById('sp-name').innerText = staff.name; document.getElementById('sp-mobile').innerText = staff.mobile; document.getElementById('sp-earnings').innerText = formatMoney(st.earn); document.getElementById('sp-total').innerText = st.tot; document.getElementById('sp-urgent').innerText = st.urgC; document.getElementById('sp-completed').innerText = st.c; document.getElementById('sp-progress').innerText = st.prog; document.getElementById('sp-pending').innerText = st.p;
+            openModal('staff-profile-modal');
+        }
+
+        async function saveStaff(e) { e.preventDefault(); const m=document.getElementById('staff-mobile').value.trim(); if(m.length!==10) return showToast('10 digit mobile required', 'error'); try { await DB.addStaff({ name: document.getElementById('staff-name').value.trim(), mobile: m, created: Date.now() }); showToast('Staff added!'); closeModal('staff-modal'); e.target.reset(); popStaff(); if(currentView==='staff') loadStaff(); if(currentView==='dashboard') loadDashboard(); } catch(er) { showToast(er.message || 'Error', 'error'); } }
+
+        // --- TASK LIST LOGIC ---
+        function openTaskModal() { document.getElementById('form-task').reset(); document.getElementById('task-id').value=''; document.getElementById('parse-preview-container').classList.add('hidden'); document.getElementById('task-modal-title').innerHTML='<i class="ph ph-plus-circle"></i> Create Task'; openModal('task-modal'); }
+        
+        async function loadTasks() {
+            let ts=await DB.getAllTasks(); const f=document.getElementById('task-filter').value; const s=document.getElementById('task-search').value.toLowerCase();
+            if(currentUser.role!=='admin') ts=ts.filter(t=>t.staffMobile===currentUser.id && !t.deleted);
+            if(f==='bin') ts=ts.filter(t=>t.deleted);
+            else { 
+                ts=ts.filter(t=>!t.deleted); 
+                if(f==='today') ts=ts.filter(t=>isToday(t.createdAt));
+                if(f==='pending') ts=ts.filter(t=>t.status==='Pending'); 
+                if(f==='in_progress') ts=ts.filter(t=>t.status==='In Progress'); 
+                if(f==='completed') ts=ts.filter(t=>t.status==='Completed'); 
+                if(f==='urgent') ts=ts.filter(t=>t.category==='Urgent'&&t.status!=='Completed'); 
+            }
+            if(s) ts=ts.filter(t=>t.customerName.toLowerCase().includes(s) || t.customerMobile.includes(s));
+            
+            const sw = { 'In Progress': 3, 'Pending': 2, 'Completed': 1 };
+            ts.sort((a, b) => {
+                if (a.category === 'Urgent' && b.category !== 'Urgent' && a.status !== 'Completed') return -1;
+                if (b.category === 'Urgent' && a.category !== 'Urgent' && b.status !== 'Completed') return 1;
+                if (sw[b.status] !== sw[a.status]) return sw[b.status] - sw[a.status];
+                return b.createdAt - a.createdAt; // Firebase string IDs require time sorting
+            });
+            renderTCards(ts, 'task-list-container');
+        }
+
+        function renderTCards(tasks, cId) {
+            document.getElementById(cId).innerHTML = tasks.length ? tasks.map(t=>{
+                const sN = allStaffMap[t.staffMobile] || t.staffMobile;
+                const isC = t.status==='Completed'; const isP = t.status==='In Progress'; const isU = t.category==='Urgent';
+                let sColor = isC ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/20' : isP ? 'text-brand-info border-brand-info/30 bg-brand-info/20' : 'text-warning border-warning/30 bg-warning/20';
+                
+                let totQ = 0, delQ = 0;
+                if(t.parsedItems) t.parsedItems.forEach(i => { totQ += i.qty; delQ += (i.deliveredQty || 0); });
+                let pBar = totQ > 0 ? Math.min(100, Math.round((delQ/totQ)*100)) : 0;
+                if(isC) pBar = 100;
+
+                // Notice the string quotes around '${t.id}' for Firebase IDs
+                return `
+                <div class="glass-panel p-6 rounded-3xl flex flex-col cursor-pointer hover:border-brand-primary/50 transition shadow-panel group relative overflow-hidden" onclick="viewTaskDetails('${t.id}')">
+                    <div class="absolute top-0 left-0 h-1 bg-slate-800 w-full"><div class="h-1 ${isC ? 'bg-brand-success' : 'bg-brand-info'} transition-all duration-500" style="width: ${pBar}%"></div></div>
+                    
+                    <div class="flex justify-between items-start mb-4 mt-2">
+                        <div class="pr-2"><h3 class="font-bold text-xl group-hover:text-brand-primary transition truncate max-w-[180px]">${t.customerName}</h3><div class="flex items-center gap-3 mt-3"><a href="tel:${t.customerMobile}" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition text-xl"><i class="ph ph-phone"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center hover:bg-green-500 hover:text-white transition text-xl"><i class="ph ph-whatsapp-logo"></i></a><p class="text-sm text-slate-400 font-mono hidden sm:block">${t.customerMobile}</p></div></div>
+                        <div class="flex flex-col gap-2 items-end"><span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${sColor}">${currentAppLang==='bn'?(bnDict[t.status]||t.status):t.status}</span>${isU && !isC ? `<span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border bg-brand-danger/20 text-brand-danger border-brand-danger/30">${currentAppLang==='bn'?'জরুরি':'Urgent'}</span>` : ''}</div>
+                    </div>
+                    <div class="bg-black/30 p-5 rounded-2xl border border-slate-800 flex-1 mb-5"><p class="text-base text-slate-300 font-mono whitespace-pre-wrap line-clamp-3 leading-relaxed">${t.rawDescription}</p></div>
+                    <div class="mt-auto pt-4 border-t border-dashed border-slate-700 flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Assigned To</p>
+                            <p class="text-base font-bold text-white flex items-center gap-1"><i class="ph ph-user-circle text-brand-primary text-xl"></i> ${sN}</p>
+                            <p class="text-[10px] text-brand-secondary font-bold mt-1 font-mono"><i class="ph ph-calendar-blank"></i> ${formatDate(t.createdAt)}</p>
+                        </div>
+                        <div class="text-right">${currentUser.role==='admin' && t.deleted ? '<span class="text-base font-black text-brand-danger tracking-widest">IN BIN</span>' : `<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Total Comm.</p><p class="text-2xl font-black text-brand-success leading-none">${formatMoney(t.totalCommission||0)}</p>`}</div>
+                    </div>
+                </div>`;
+            }).join('') : `<div class="col-span-full py-20 text-center text-slate-500 glass-panel rounded-3xl border-dashed border-slate-700 flex flex-col items-center gap-3"><div class="p-6 bg-slate-800 rounded-full"><i class="ph ph-folder-open text-5xl"></i></div><p class="font-bold text-xl">${currentAppLang==='bn'?'কোনো কাজ পাওয়া যায়নি।':'No tasks found.'}</p></div>`;
+        }
+
+        async function viewTaskDetails(id) {
+            try {
+                const t = await DB.getTask(id); if(!t) return; const isA = currentUser.role==='admin'; const isC = t.status==='Completed'; const isP = t.status==='In Progress';
+                
+                document.getElementById('view-task-customer').innerText = t.customerName; 
+                document.getElementById('view-task-mobile-print').innerText = t.customerMobile; 
+                document.getElementById('view-task-address').innerText = t.customerAddress; 
+                document.getElementById('view-task-staff').innerText = allStaffMap[t.staffMobile] || t.staffMobile; 
+                
+                document.getElementById('view-task-date-created').innerText = formatDate(t.createdAt);
+                document.getElementById('view-task-date-completed').innerText = t.completedAt ? formatDate(t.completedAt) : 'Not Yet';
+
+                const sb = document.getElementById('view-task-status'); sb.innerText = currentAppLang==='bn'?(bnDict[t.status]||t.status):t.status;
+                let sColor = isC ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/20' : isP ? 'text-brand-info border-brand-info/30 bg-brand-info/20' : 'text-warning border-warning/30 bg-warning/20';
+                sb.className = `px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${sColor}`;
+                
+                const b = document.getElementById('view-task-badge');
+                if(t.category==='Urgent' && !isC) { b.innerText=currentAppLang==='bn'?'জরুরি':'Urgent'; b.classList.remove('hidden'); b.className=`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-brand-danger/20 text-brand-danger border border-brand-danger/30`; } else b.classList.add('hidden');
+
+                document.getElementById('view-task-contact-actions').innerHTML = `<a href="tel:${t.customerMobile}" class="w-14 h-14 rounded-full bg-slate-800 text-emerald-400 flex items-center justify-center text-3xl hover:bg-emerald-500 hover:text-white transition shadow-lg"><i class="ph ph-phone-call"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" class="w-14 h-14 rounded-full bg-slate-800 text-green-400 flex items-center justify-center text-3xl hover:bg-green-500 hover:text-white transition shadow-lg"><i class="ph ph-whatsapp-logo"></i></a>`;
+
+                const iC = document.getElementById('view-task-items');
+                const activeDict = getFullDict();
+                
+                if(t.parsedItems && t.parsedItems.length) {
+                    iC.innerHTML = t.parsedItems.map(i => {
+                        let dName = currentAppLang === 'bn' ? (activeDict[i.name] || i.name) : i.name;
+                        let dUnit = currentAppLang === 'bn' ? (activeDict[i.unit] || i.unit) : i.unit;
+                        let dQty = i.deliveredQty || 0;
+                        if(isC) { dQty = i.qty; } 
+                        let percent = Math.min(100, Math.round((dQty / i.qty) * 100));
+                        let isFullDone = dQty >= i.qty || isC;
+                        
+                        return `
+                        <div class="mb-4 pb-4 border-b border-dashed border-slate-700/50">
+                            <div class="flex justify-between items-center text-base mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-black ${isFullDone ? 'text-brand-success bg-brand-success/10 border-brand-success/30' : 'text-white bg-slate-800 border-slate-700'} px-3 py-1.5 rounded-lg text-sm border shadow-sm">
+                                        ${dQty} / ${i.qty} <span class="text-[10px] ${isFullDone ? 'text-brand-success' : 'text-brand-secondary'} uppercase tracking-widest">${dUnit}</span>
+                                    </span>
+                                    <span class="font-black capitalize text-white text-lg tracking-wide ${isFullDone ? 'text-slate-400 line-through' : ''}">${dName}</span>
+                                    ${isFullDone ? '<i class="ph ph-check-circle text-brand-success text-xl"></i>' : ''}
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-black text-brand-success text-xl">₹${i.commission.toFixed(2)}</p>
+                                    ${i.rate>0?`<p class="text-[10px] text-slate-400 font-mono font-bold uppercase mt-1">Rate: ₹${i.rate}</p>`:''}
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-800/80 rounded-full h-1.5 mt-2 overflow-hidden border border-slate-700/50">
+                                <div class="bg-${isFullDone ? 'brand-success' : 'brand-info'} h-1.5 rounded-full transition-all duration-1000 ease-out shadow-neon-blue" style="width: ${percent}%"></div>
+                            </div>
+                        </div>`
+                    }).join('');
+                } else {
+                    iC.innerHTML = `<p class="font-mono text-base font-bold text-slate-300 whitespace-pre-wrap p-5 bg-slate-800 rounded-2xl">${t.rawDescription}</p>`;
+                }
+                
+                if(t.logs && t.logs.length > 0) {
+                    iC.innerHTML += `<div class="mt-6 p-5 bg-brand-info/10 border border-brand-info/30 rounded-2xl"><p class="text-[10px] text-brand-info font-black uppercase tracking-widest mb-4 flex items-center gap-2"><i class="ph ph-clock-counter-clockwise text-xl"></i> Delivery History</p>${t.logs.map(l => `<div class="mb-4 last:mb-0 border-l-2 border-brand-info pl-4"><p class="text-[10px] text-slate-400 font-bold mb-1">${formatDate(l.date)}</p><p class="text-base font-bold text-white whitespace-pre-wrap">${l.text}</p></div>`).join('')}</div>`;
+                }
+
+                document.getElementById('view-task-commission').innerText = formatMoney(t.totalCommission||0);
+                
+                const act = document.getElementById('view-task-actions'); act.innerHTML='';
+                if(t.deleted && isA) {
+                    act.innerHTML = `<button onclick="restT('${t.id}')" class="flex-1 py-4 rounded-2xl bg-slate-700 text-white font-bold hover:bg-slate-600 transition">Restore</button><button onclick="hardDelT('${t.id}')" class="flex-1 py-4 rounded-2xl bg-brand-danger text-white font-bold shadow-lg shadow-red-500/20 transition hover:bg-red-600">Hard Delete</button>`;
+                } else if(!t.deleted) {
+                    if(!isC) {
+                        act.innerHTML += `<button onclick="openProgressModal('${t.id}')" class="flex-1 py-4 rounded-2xl bg-brand-info hover:bg-purple-600 text-white font-black uppercase tracking-widest text-xs shadow-neon flex items-center justify-center gap-2 transition transform active:scale-95"><i class="ph ph-truck text-xl"></i> Update</button>`;
+                        act.innerHTML += `<button onclick="markC('${t.id}')" class="flex-1 py-4 rounded-2xl bg-brand-success hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-xs shadow-neon flex items-center justify-center gap-2 transition transform active:scale-95"><i class="ph ph-check-circle text-xl"></i> Done</button>`;
+                    }
+                    act.innerHTML += `<button onclick="copyBillText('${t.id}')" class="w-[60px] h-[60px] rounded-2xl bg-slate-700 text-white flex items-center justify-center text-2xl font-bold shadow-lg transition transform active:scale-90 hover:bg-slate-600" title="Copy Text"><i class="ph ph-copy"></i></button>`;
+                    act.innerHTML += `<button onclick="shareTaskWA('${t.id}')" class="w-[60px] h-[60px] rounded-2xl bg-green-600 text-white flex items-center justify-center text-3xl font-bold shadow-lg shadow-green-500/20 transition transform active:scale-90 hover:bg-green-500"><i class="ph ph-whatsapp-logo"></i></button>`;
+                    if(isA) act.innerHTML += `<div class="flex flex-col gap-2"><button onclick="editT('${t.id}')" class="w-12 h-[28px] rounded-lg bg-slate-700 text-white flex items-center justify-center text-sm hover:bg-slate-600 transition"><i class="ph ph-pencil-simple"></i></button><button onclick="delT('${t.id}')" class="w-12 h-[28px] rounded-lg bg-brand-danger/20 text-brand-danger flex items-center justify-center text-sm hover:bg-brand-danger/40 transition"><i class="ph ph-trash"></i></button></div>`;
+                }
+                openModal('view-task-modal');
+            } catch(e) { console.error(e); }
+        }
+
+        // --- PARTIAL PROGRESS LOGIC ---
+        async function openProgressModal(id) { 
+            const t = await DB.getTask(id);
+            document.getElementById('prog-task-id').value = id; 
+            document.getElementById('prog-desc').value = ''; 
+            
+            const cont = document.getElementById('prog-items-container');
+            if(t.parsedItems && t.parsedItems.length > 0) {
+                const activeDict = getFullDict();
+                cont.innerHTML = t.parsedItems.map((i, index) => {
+                    let dName = currentAppLang === 'bn' ? (activeDict[i.name] || i.name) : i.name;
+                    let dUnit = currentAppLang === 'bn' ? (activeDict[i.unit] || i.unit) : i.unit;
+                    let dQty = i.deliveredQty || 0;
+                    let remaining = i.qty - dQty;
+                    let isDone = remaining <= 0;
+                    
+                    if(isDone) return ''; 
+                    
+                    return `
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 flex justify-between items-center transition hover:border-brand-primary/50">
+                        <div>
+                            <p class="text-base font-bold text-white capitalize">${dName}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1"><i class="ph ph-clock text-warning"></i> Pending: ${remaining} ${dUnit}</p>
+                        </div>
+                        <div class="w-24 relative">
+                            <input type="number" id="prog-qty-${index}" max="${remaining}" min="0" placeholder="0" class="glass-input w-full pl-3 pr-8 py-3 rounded-xl text-center font-black text-brand-info text-lg">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500">${i.unit}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+                
+                if(cont.innerHTML.trim() === '') {
+                    cont.innerHTML = `<div class="text-center py-6 bg-brand-success/10 rounded-2xl border border-brand-success/30"><i class="ph ph-check-circle text-4xl text-brand-success mb-2"></i><p class="text-sm text-brand-success font-bold">All items are delivered!</p><p class="text-xs text-slate-400 mt-1">Please click 'Done' on the task.</p></div>`;
+                }
+            } else {
+                cont.innerHTML = `<div class="p-4 bg-slate-800 rounded-xl border border-slate-700 text-center"><p class="text-sm text-slate-400 font-bold">No individual items mapped.</p><p class="text-xs text-slate-500 mt-1">Use the text log below to record progress.</p></div>`;
+            }
+            openModal('progress-modal'); 
+        }
+
+        async function saveProgress() {
+            const id = document.getElementById('prog-task-id').value; 
+            const desc = document.getElementById('prog-desc').value.trim();
+            let t = await DB.getTask(id); 
+            
+            let logTexts = [];
+            let allCompleted = true;
+
+            if (t.parsedItems && t.parsedItems.length > 0) {
+                t.parsedItems.forEach((item, index) => {
+                    let input = document.getElementById(`prog-qty-${index}`);
+                    let dQty = item.deliveredQty || 0;
+                    
+                    if (input && input.value) {
+                        let addQty = parseFloat(input.value);
+                        if (addQty > 0) {
+                            let remaining = item.qty - dQty;
+                            if(addQty > remaining) addQty = remaining; 
+                            
+                            item.deliveredQty = dQty + addQty;
+                            logTexts.push(`🔹 ${item.name} (${addQty} ${item.unit})`);
+                        }
+                    }
+                    
+                    if ((item.deliveredQty || 0) < item.qty) {
+                        allCompleted = false;
+                    }
+                });
+            } else {
+                allCompleted = false;
+            }
+
+            if(desc) logTexts.push(`📝 Note: ${desc}`);
+
+            if (logTexts.length === 0) {
+                return showToast('Please enter quantity or a note!', 'error');
+            }
+
+            if(!t.logs) t.logs = []; 
+            t.logs.push({ date: Date.now(), text: "Delivered:\n" + logTexts.join('\n') }); 
+            
+            t.updatedAt = Date.now();
+
+            if(allCompleted) {
+                t.status = 'Completed';
+                t.completedAt = Date.now();
+                showToast('All items delivered! Task Completed.');
+            } else {
+                t.status = 'In Progress';
+                showToast('Progress Updated!');
+            }
+            
+            await DB.saveTask(t); 
+            closeModal('progress-modal'); 
+            viewTaskDetails(id); 
+            loadTasks(); 
+            loadDashboard();
+        }
+
+        async function getBillText(id) {
+            const t = await DB.getTask(id); let itemsText = '';
+            if(t.parsedItems && t.parsedItems.length) { 
+                t.parsedItems.forEach(i => { 
+                    let dQty = i.deliveredQty || 0;
+                    let isFullDone = dQty >= i.qty || t.status === 'Completed';
+                    if(t.status === 'Completed') dQty = i.qty;
+                    itemsText += `${isFullDone ? '✅' : '⏳'} ${i.qty} ${i.unit} - ${i.name} (Delivered: ${dQty})\n`; 
+                }); 
+            } else { 
+                itemsText = t.rawDescription + '\n'; 
+            }
+            let logsText = '';
+            if(t.logs && t.logs.length > 0) { 
+                logsText = `\n*Delivery Updates:*\n`; 
+                t.logs.forEach(l => { logsText += `🔸 ${formatDate(l.date)}\n${l.text}\n\n`; }); 
+            }
+            return `*NEW DADA BHAI BUILDERS*\nDelivery Bill\n\n*Customer:* ${t.customerName}\n*Address:* ${t.customerAddress}\n\n*Items:*\n${itemsText}${logsText}\n*Status:* ${t.status}\n\n_Thanks for choosing us!_`;
+        }
+
+        async function shareTaskWA(id) {
+            const text = await getBillText(id);
+            const t = await DB.getTask(id);
+            window.open(`https://wa.me/91${t.customerMobile}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        async function copyBillText(id) {
+            const text = await getBillText(id);
+            navigator.clipboard.writeText(text).then(() => showToast('Bill Text Copied!')).catch(() => showToast('Failed to copy', 'error'));
+        }
+
+        async function markC(id) { showConfirm('Task Done', 'Mark completed manually?', async()=>{ let t=await DB.getTask(id); t.status='Completed'; t.completedAt = Date.now(); await DB.saveTask(t); showToast('Completed!'); closeModal('view-task-modal'); loadDashboard(); loadTasks(); }); }
+        
+        async function editT(id) { 
+            closeModal('view-task-modal'); 
+            let t = await DB.getTask(id); 
+            document.getElementById('task-id').value = t.id; 
+            document.getElementById('task-customer').value = t.customerName; 
+            document.getElementById('task-mobile').value = t.customerMobile; 
+            document.getElementById('task-address').value = t.customerAddress; 
+            document.getElementById('task-desc').value = t.rawDescription; 
+            document.getElementById('task-category').value = t.category; 
+            document.getElementById('task-staff').value = t.staffMobile; 
+            document.getElementById('task-modal-title').innerHTML = '<i class="ph ph-pencil-simple"></i> Edit Task'; 
+            openModal('task-modal'); 
+            document.getElementById('task-desc').dispatchEvent(new Event('input')); 
+        }
+        
+        async function delT(id) { showConfirm('Bin', 'Move to recycle bin?', async()=>{ let t=await DB.getTask(id); t.deleted=true; await DB.saveTask(t); closeModal('view-task-modal'); loadTasks(); }); }
+        async function restT(id) { let t=await DB.getTask(id); t.deleted=false; await DB.saveTask(t); closeModal('view-task-modal'); loadTasks(); }
+        async function hardDelT(id) { showConfirm('Warning', 'Permanent delete. Proceed?', async()=>{ await DB.hardDeleteTask(id); closeModal('view-task-modal'); loadTasks(); }); }
+
+        // EXPOSE FUNCTIONS TO WINDOW SO HTML CAN USE THEM
+        window.handleLogin = handleLogin;
+        window.logout = logout;
+        window.toggleZoom = toggleZoom;
+        window.toggleLanguage = toggleLanguage;
+        window.navigate = navigate;
+        window.navigateTasks = navigateTasks;
+        window.exportDataCSV = exportDataCSV;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.closeConfirmModal = closeConfirmModal;
+        window.addCustomRate = addCustomRate;
+        window.deleteCustomRate = deleteCustomRate;
+        window.saveStaff = saveStaff;
+        window.viewStaffProfile = viewStaffProfile;
+        window.openTaskModal = openTaskModal;
+        window.saveTask = saveTask;
+        window.loadTasks = loadTasks;
+        window.viewTaskDetails = viewTaskDetails;
+        window.openProgressModal = openProgressModal;
+        window.saveProgress = saveProgress;
+        window.markC = markC;
+        window.copyBillText = copyBillText;
+        window.shareTaskWA = shareTaskWA;
+        window.editT = editT;
+        window.delT = delT;
+        window.restT = restT;
+        window.hardDelT = hardDelT;
+
+        // --- MAGIC AUTO TRANSLATION DICTIONARY ---
+        const bnDict = {
+            "Overview": "সারসংক্ষেপ", "Real-time business analytics": "রিয়েল-টাইম ব্যবসার হিসাব",
+            "Total Staff": "মোট স্টাফ", "Pending Tasks": "বাকি কাজ", "Pending": "বাকি কাজ",
+            "In Progress": "কাজ চলছে", "Urgent": "জরুরি", "Completed": "কমপ্লিট",
+            "Total Paid": "মোট পেমেন্ট", "Total Earnings": "মোট ইনকাম", "Recent Activity": "সাম্প্রতিক কাজ",
+            "View All Tasks": "সব কাজ দেখুন", "Team Members": "স্টাফ মেম্বার", "Manage your delivery network": "আপনার স্টাফদের ম্যানেজ করুন",
+            "Add Staff": "স্টাফ যোগ করুন", "Add Team Member": "নতুন স্টাফ যোগ", "Deliveries": "ডেলিভারি লিস্ট",
+            "Track and manage task pipeline (Live)": "কাজের লিস্ট ও ট্র্যাকিং (লাইভ)", "Create Task": "নতুন কাজ",
+            "Dynamic Rates": "কমিশন রেট সেটিং", "Configure items for automatic commission calculation": "অটোমেটিক হিসাবের জন্য রেট সেট করুন",
+            "Add Product": "নতুন আইটেম যোগ", "Item Keyword (English)": "আইটেমের নাম (ইংরেজিতে)", "Bengali Name": "বাংলা নাম",
+            "Unit": "একক (Unit)", "Rate (₹)": "রেট (₹)", "Save Product": "প্রোডাক্ট সেভ করুন", "Active Configs": "বর্তমান রেট লিস্ট",
+            "Dashboard": "ড্যাশবোর্ড", "Team": "স্টাফ লিস্ট", "Rates Config": "রেট সেটিং", "All Deliveries": "সব কাজ", 
+            "My Tasks": "আমার কাজ", "Home": "হোম", "Staff": "স্টাফ", "Rates": "রেট", "Tasks": "কাজ", "Log Out": "লগআউট",
+            "Secure Logout": "লগআউট", "Secure Login": "লগইন করুন", "Admin Pass / Staff Mobile": "পাসওয়ার্ড / মোবাইল নম্বর",
+            "Security Credential": "লগইন ডিটেইলস দিন", "Customer Details": "কাস্টমারের তথ্য", "Name": "নাম",
+            "Mobile Number": "মোবাইল নম্বর", "Full Delivery Address": "ডেলিভারি ঠিকানা", "Items (One per line)": "মালপত্রের লিস্ট (নিচে নিচে লিখুন)",
+            "Priority": "প্রায়োরিটি", "Assign To": "কাকে দেবেন?", "Select Staff": "স্টাফ সিলেক্ট করুন",
+            "Save Task": "কাজ সেভ করুন", "Normal Delivery": "নরমাল ডেলিভারি", "Urgent Delivery": "জরুরি ডেলিভারি",
+            "Est. Commission": "মোট কমিশন", "Delivery Address": "ঠিকানা", "Item Breakdown & Progress": "মালপত্রের হিসাব ও স্টেটাস",
+            "Total Comm.": "মোট কমিশন", "Cancel": "ক্যান্সেল", "Proceed": "হ্যাঁ, করুন", "Confirm": "কনফার্ম করুন",
+            "Are you sure?": "আপনি কি নিশ্চিত?", "Restore": "রিস্টোর করুন", "Hard Delete": "একেবারে ডিলিট",
+            "Complete": "কমপ্লিট", "Mark Completed": "কাজ শেষ করুন", "Update": "আপডেট", "Done": "কমপ্লিট",
+            "Delivery Update": "ডেলিভারি আপডেট", "Save Log": "সেভ করুন", "Delivery History": "ডেলিভারির ইতিহাস",
+            "No tasks found.": "কোনো কাজ পাওয়া যায়নি।", "bag": "বস্তা", "kg": "কেজি", "cft": "ফুট", "pc": "পিস", "feet": "ফুট",
+            "Language (ENG)": "ভাষা পাল্টান (বাং)", "Text Size (+/-)": "অক্ষর বড়/ছোট (+/-)", "Staff Full Name": "স্টাফের পুরো নাম", 
+            "10-Digit Mobile Number": "১০-ডিজিটের মোবাইল নম্বর", "Create Profile": "প্রোফাইল তৈরি করুন", "Total Tasks": "মোট কাজ", 
+            "Urgent Done": "জরুরি কাজ কমপ্লিট", "Task Status Breakdown": "কাজের স্টেটাস রিপোর্ট", "Today's Tasks": "আজকের কাজ",
+            "Created": "তৈরি হয়েছে", "Pending:": "বাকি:", "Not Yet": "এখনও হয়নি", "Professional Logistics Manager (Live)": "প্রফেশনাল লজিস্টিক ম্যানেজার (লাইভ)"
+        };
+
+        let currentAppLang = localStorage.getItem('ndbb_lang_v10') || 'en';
+
+        function getFullDict() {
+            let fullDict = { ...bnDict };
+            customRates.forEach(r => { if(r.bengaliName) { fullDict[r.name] = r.bengaliName; fullDict[r.name.toUpperCase()] = r.bengaliName; } });
+            return fullDict;
+        }
+
+        function toggleLanguage() { currentAppLang = currentAppLang === 'en' ? 'bn' : 'en'; localStorage.setItem('ndbb_lang_v10', currentAppLang); location.reload(); }
+
+        const domObserver = new MutationObserver(() => applyTranslations());
+
+        function applyTranslations() {
+            if(currentAppLang === 'en') return;
+            domObserver.disconnect();
+            const activeDict = getFullDict();
+            const walk = (node) => {
+                if (node.nodeType === 3) { 
+                    let text = node.nodeValue.trim();
+                    if (text && activeDict[text]) { node.nodeValue = node.nodeValue.replace(text, activeDict[text]); }
+                } else if (node.nodeType === 1 && node.nodeName !== "SCRIPT" && node.nodeName !== "STYLE") {
+                    if(node.placeholder && activeDict[node.placeholder]) node.placeholder = activeDict[node.placeholder];
+                    for (let i = 0; i < node.childNodes.length; i++) walk(node.childNodes[i]);
+                }
+            };
+            walk(document.body);
+            document.querySelectorAll('.lang-btn-text').forEach(b => b.innerText = "বাং");
+            domObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            if(currentAppLang === 'bn') { applyTranslations(); }
+            
+            const u = localStorage.getItem('bs_u_live'); 
+            if(u) { 
+                currentUser = JSON.parse(u); 
+                initApp(); 
+            } else { 
+                document.getElementById('login-input').focus(); 
+            }
+        });
+    </script>
+</body>
+</html>
