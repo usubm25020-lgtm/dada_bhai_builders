@@ -596,11 +596,8 @@
             { id: 5, keyword: 'ultratech', name: 'Ultratech', bengaliName: 'আল্ট্রাটেক', unit: 'bag', rate: 3 }
         ];
 
-        let customRates = JSON.parse(localStorage.getItem('bs_rates_live'));
-        if(!customRates || customRates.length === 0) {
-            customRates = defaultRates;
-            localStorage.setItem('bs_rates_live', JSON.stringify(customRates));
-        }
+        let customRates = []; // ফায়ারবেস থেকে লাইভ লোড হবে
+
 
         // --- TIME HELPERS FOR AUTO-VANISH & MONTHLY EARNINGS ---
         function getLast9PM() {
@@ -752,6 +749,7 @@
             await DB.getAllStaff(); buildNav(); navigate('dashboard'); if(currentUser.role==='admin') popStaff();
             
             // LIVE SNAPSHOT & CUSTOMER LIST
+                        // LIVE SNAPSHOT & CUSTOMER LIST
             onSnapshot(collection(db, 'tasks'), (snapshot) => {
                 window.tasksCache = [];
                 snapshot.forEach(doc => window.tasksCache.push(doc.data()));
@@ -759,6 +757,17 @@
                 if(currentView==='dashboard') loadDashboard();
                 if(currentView==='tasks') loadTasks();
                 if(currentView==='staff') loadStaff();
+            });
+
+            // NEW: LIVE RATES SNAPSHOT (সার্ভার থেকে লাইভ রেট আপডেট)
+            onSnapshot(doc(db, 'settings', 'rates'), (docSnap) => {
+                if (docSnap.exists()) {
+                    customRates = docSnap.data().rates || [];
+                } else {
+                    customRates = defaultRates;
+                    setDoc(doc(db, 'settings', 'rates'), { rates: customRates });
+                }
+                if(currentView==='settings') renderSettingsRates();
             });
         }
 
@@ -787,20 +796,36 @@
         applyZoom();
 
         // --- RATE CONFIG LOGIC ---
-        function addCustomRate(e) {
+        // --- RATE CONFIG LOGIC (NOW SAVED TO FIREBASE) ---
+        async function addCustomRate(e) {
             e.preventDefault();
             const kw = document.getElementById('rate-keyword').value.trim().toLowerCase();
             const bnName = document.getElementById('rate-bengali').value.trim();
             const unit = document.getElementById('rate-unit').value.trim().toLowerCase();
             const amt = parseFloat(document.getElementById('rate-amount').value);
             if(!kw || !unit || isNaN(amt)) return;
+            
             const exIdx = customRates.findIndex(r => r.keyword === kw);
-            if(exIdx > -1) { customRates[exIdx] = { ...customRates[exIdx], unit, rate: amt, bengaliName: bnName }; showToast('Product updated'); } 
-            else { customRates.push({ id: Date.now(), keyword: kw, name: kw.charAt(0).toUpperCase() + kw.slice(1), bengaliName: bnName, unit, rate: amt }); showToast('Product added'); }
-            localStorage.setItem('bs_rates_live', JSON.stringify(customRates)); document.getElementById('form-custom-rate').reset(); renderSettingsRates();
+            if(exIdx > -1) { 
+                customRates[exIdx] = { ...customRates[exIdx], unit, rate: amt, bengaliName: bnName }; 
+                showToast('Product updated'); 
+            } else { 
+                customRates.push({ id: Date.now(), keyword: kw, name: kw.charAt(0).toUpperCase() + kw.slice(1), bengaliName: bnName, unit, rate: amt }); 
+                showToast('Product added'); 
+            }
+            
+            // সার্ভারে ডেটা সেভ হচ্ছে
+            await updateDoc(doc(db, 'settings', 'rates'), { rates: customRates });
+            document.getElementById('form-custom-rate').reset(); 
         }
 
-        function deleteCustomRate(id) { customRates = customRates.filter(r => r.id !== id); localStorage.setItem('bs_rates_live', JSON.stringify(customRates)); showToast('Product removed'); renderSettingsRates(); }
+        async function deleteCustomRate(id) { 
+            customRates = customRates.filter(r => r.id !== id); 
+            // সার্ভার থেকে ডিলিট হচ্ছে
+            await updateDoc(doc(db, 'settings', 'rates'), { rates: customRates });
+            showToast('Product removed'); 
+        }
+
 
         function renderSettingsRates() {
             const cont = document.getElementById('custom-rates-list');
