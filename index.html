@@ -135,6 +135,20 @@
         </div>
     </div>
 
+    <!-- History Detail Modal -->
+    <div id="history-detail-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-md rounded-[2rem] flex flex-col max-h-[80vh] slide-up shadow-2xl relative overflow-hidden border border-brand-primary/30">
+            <div class="p-6 border-b border-slate-800 bg-slate-900/80 text-center relative">
+                <button onclick="closeModal('history-detail-modal')" class="absolute right-5 top-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition"><i class="ph ph-x"></i></button>
+                <h3 class="text-xl font-black text-white" id="hd-date">Date</h3>
+                <p class="text-xs text-brand-secondary mt-1 font-bold tracking-widest uppercase">Work Summary</p>
+            </div>
+            <div class="p-5 overflow-y-auto space-y-4 custom-scrollbar bg-black/20" id="hd-content">
+                <!-- Details will come here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Partial Delivery Update Modal -->
     <div id="progress-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 slide-up border border-brand-info/50 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
@@ -166,7 +180,7 @@
             
             <div class="p-6 overflow-y-auto space-y-5">
                 <div class="flex justify-between items-center p-5 bg-gradient-to-r from-brand-success/20 to-brand-success/5 border border-brand-success/30 rounded-2xl shadow-panel">
-                    <span class="text-brand-success font-black uppercase tracking-widest text-[10px]">Total Earnings</span>
+                    <span class="text-brand-success font-black uppercase tracking-widest text-[10px]">Monthly Earnings</span>
                     <span class="text-3xl font-black text-white" id="sp-earnings">₹0.00</span>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -192,6 +206,13 @@
                     <div class="flex justify-between items-center bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
                         <span class="text-sm font-bold text-slate-300 flex items-center gap-2"><i class="ph ph-clock text-warning text-xl"></i> Pending</span>
                         <span class="font-black text-xl text-white" id="sp-pending">0</span>
+                    </div>
+                </div>
+                <!-- হিস্ট্রি লিস্ট কন্টেইনার -->
+                <div class="mt-4 pb-2 border-t border-slate-700/50 pt-4">
+                    <p class="text-[10px] text-brand-secondary uppercase tracking-widest font-black mb-3 px-1"><i class="ph ph-clock-counter-clockwise"></i> Daily Earning & Task History</p>
+                    <div id="sp-history" class="space-y-3 max-h-[30vh] overflow-y-auto custom-scrollbar pr-2">
+                        <!-- ডায়নামিক হিস্ট্রি এখানে আসবে -->
                     </div>
                 </div>
             </div>
@@ -434,11 +455,15 @@
                     <input type="hidden" id="task-id">
                     <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4">
                         <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i class="ph ph-user-circle"></i> Customer Details</h4>
+                        
+                        <!-- NEW CUSTOMER AUTO-FILL GRID -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <input type="text" id="task-customer" required class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Name">
-                            <input type="tel" id="task-mobile" required class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Mobile Number">
+                            <input type="text" id="task-customer" required list="customer-list" oninput="autoFillCustomer()" autocomplete="off" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Name">
+                            <datalist id="customer-list"></datalist>
+                            <input type="tel" id="task-mobile" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Mobile Number (Optional)">
                         </div>
-                        <input type="text" id="task-address" required class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Full Delivery Address">
+                        <input type="text" id="task-address" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Full Delivery Address (Optional)">
+                        
                     </div>
                     <div>
                         <div class="flex justify-between items-end mb-2">
@@ -536,9 +561,8 @@
 
     <!-- MAIN APP SCRIPT: FIREBASE MODULE -->
     <script type="module">
-        // Import Firebase Functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         // Your Firebase Configuration
         const firebaseConfig = {
@@ -559,6 +583,10 @@
         let currentUser = null; 
         let currentView = 'dashboard';
         let allStaffMap = {}; 
+        
+        // NEW GLOBAL CACHE
+        window.tasksCache = []; 
+        window.customerDataCache = {};
 
         const defaultRates = [
             { id: 1, keyword: 'sand', name: 'Sand', bengaliName: 'বালি', unit: 'cft', rate: 2 },
@@ -572,6 +600,18 @@
         if(!customRates || customRates.length === 0) {
             customRates = defaultRates;
             localStorage.setItem('bs_rates_live', JSON.stringify(customRates));
+        }
+
+        // --- TIME HELPERS FOR AUTO-VANISH & MONTHLY EARNINGS ---
+        function getLast9PM() {
+            const now = new Date();
+            const cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 0, 0); 
+            if (now < cutoff) cutoff.setDate(cutoff.getDate() - 1); 
+            return cutoff.getTime();
+        }
+        function getStartOfMonth() {
+            const now = new Date();
+            return new Date(now.getFullYear(), now.getMonth(), 1).getTime();
         }
 
         // --- NEW FIREBASE DB WRAPPER ---
@@ -599,12 +639,10 @@
             },
             saveTask: async (t) => {
                 if (t.id) {
-                    // Update existing Document
                     const taskRef = doc(db, 'tasks', t.id);
                     await updateDoc(taskRef, t);
                     return t.id;
                 } else {
-                    // Create new Document
                     const colRef = collection(db, 'tasks');
                     const docRef = await addDoc(colRef, t);
                     t.id = docRef.id;
@@ -618,10 +656,7 @@
                 return docSnap.exists() ? docSnap.data() : null;
             },
             getAllTasks: async () => {
-                const snapshot = await getDocs(collection(db, 'tasks'));
-                const tasks = [];
-                snapshot.forEach(docSnap => tasks.push(docSnap.data()));
-                return tasks;
+                return window.tasksCache; // Returns from live cache for zero loading
             },
             hardDeleteTask: async (id) => {
                 await deleteDoc(doc(db, 'tasks', id));
@@ -646,7 +681,6 @@
         function showConfirm(t, m, func) { document.getElementById('confirm-title').innerText = t; document.getElementById('confirm-message').innerText = m; cb = func; openModal('confirm-modal'); }
         function closeConfirmModal() { closeModal('confirm-modal'); cb = null; }
         
-        // Attach listener for confirm button manually 
         document.getElementById('confirm-btn').addEventListener('click', async () => { if(cb) await cb(); closeConfirmModal(); });
 
         function formatMoney(amt) { return '₹' + parseFloat(amt).toFixed(2); }
@@ -695,7 +729,7 @@
             document.getElementById('sidebar-user-role').innerText = isA?'Administrator':`ID: ${currentUser.id}`;
         }
 
-        // --- AUTH ---
+        // --- AUTH & INIT APP ---
         async function handleLogin(e) {
             e.preventDefault(); const val = document.getElementById('login-input').value.trim();
             if(val === ADMIN_PASS) { currentUser = { role:'admin', id:'admin', name:'Administrator' }; localStorage.setItem('bs_u_live', JSON.stringify(currentUser)); initApp(); }
@@ -716,6 +750,34 @@
             document.getElementById('login-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('flex');
             document.getElementById('app-view').classList.remove('hidden'); document.getElementById('app-view').classList.add('flex');
             await DB.getAllStaff(); buildNav(); navigate('dashboard'); if(currentUser.role==='admin') popStaff();
+            
+            // LIVE SNAPSHOT & CUSTOMER LIST
+            onSnapshot(collection(db, 'tasks'), (snapshot) => {
+                window.tasksCache = [];
+                snapshot.forEach(doc => window.tasksCache.push(doc.data()));
+                populateCustomerList();
+                if(currentView==='dashboard') loadDashboard();
+                if(currentView==='tasks') loadTasks();
+                if(currentView==='staff') loadStaff();
+            });
+        }
+
+        // --- CUSTOMER AUTO-FILL LOGIC ---
+        function populateCustomerList() {
+            const list = document.getElementById('customer-list');
+            if(!list) return;
+            const unique = {};
+            window.tasksCache.forEach(t => { if(t.customerName) unique[t.customerName] = { phone: t.customerMobile, addr: t.customerAddress }; });
+            window.customerDataCache = unique;
+            list.innerHTML = Object.keys(unique).map(name => `<option value="${name}">`).join('');
+        }
+
+        window.autoFillCustomer = function() {
+            const name = document.getElementById('task-customer').value;
+            if(window.customerDataCache && window.customerDataCache[name]) {
+                document.getElementById('task-mobile').value = window.customerDataCache[name].phone || '';
+                document.getElementById('task-address').value = window.customerDataCache[name].addr || '';
+            }
         }
 
         // --- ZOOM LOGIC ---
@@ -825,10 +887,10 @@
             document.getElementById('parse-preview-total').innerText = formatMoney(p.total);
         });
 
-        // --- TASK SAVE LOGIC (FIREBASE COMPATIBLE) ---
+        // --- TASK SAVE LOGIC ---
         async function saveTask(e) {
             e.preventDefault();
-            const id = document.getElementById('task-id').value; // Now treated as String
+            const id = document.getElementById('task-id').value; 
             const isEdit = !!id;
             
             const pd = parseDesc(document.getElementById('task-desc').value);
@@ -838,7 +900,6 @@
                 existing = await DB.getTask(id);
             }
             
-            // Critical Fix: Preserve deliveredQty during text edits
             if (existing && existing.parsedItems && pd.items.length > 0) {
                 pd.items.forEach(newItem => {
                     let oldItem = existing.parsedItems.find(i => i.name === newItem.name);
@@ -866,7 +927,7 @@
             };
 
             if (isEdit) {
-                task.id = id; // Ensure string ID is preserved
+                task.id = id; 
             }
 
             try {
@@ -901,7 +962,7 @@
                         if(t.status==='Completed'){ st.c++; st.tp+=(t.totalCommission||0); } 
                     } 
                 });
-                rec = tasks.filter(t=>!t.deleted).sort((a,b)=>b.createdAt-a.createdAt).slice(0,4); // Sort by time, not ID
+                rec = tasks.filter(t=>!t.deleted).sort((a,b)=>b.createdAt-a.createdAt).slice(0,4); 
                 document.getElementById('dashboard-stats-admin').innerHTML = `
                     <div onclick="navigateTasks('today')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-primary/50 transition group shadow-panel"><div class="w-12 h-12 rounded-2xl bg-brand-primary/20 text-brand-primary flex items-center justify-center mb-4 group-hover:scale-110 transition shadow-neon-blue"><i class="ph ph-calendar-star text-2xl"></i></div><p class="text-4xl font-black">${st.todayT}</p><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Today's Tasks</p></div>
                     <div onclick="navigateTasks('pending')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-warning/50 transition group shadow-panel"><div class="w-12 h-12 rounded-2xl bg-warning/20 text-warning flex items-center justify-center mb-4 group-hover:scale-110 transition"><i class="ph ph-clock text-2xl"></i></div><p class="text-4xl font-black">${st.p}</p><p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Pending</p></div>
@@ -910,22 +971,33 @@
                 `;
             } else {
                 document.getElementById('dashboard-stats-staff').classList.remove('hidden');
-                const mt = tasks.filter(t=>t.staffMobile===currentUser.id && !t.deleted);
-                mt.forEach(t=>{ 
-                    if(isToday(t.createdAt)) st.todayT++;
-                    if(t.status==='Pending') { st.p++; if(t.category==='Urgent') st.u++; }
-                    if(t.status==='In Progress') st.prog++;
-                    if(t.status==='Completed'){ st.c++; st.my+=(t.totalCommission||0); } 
+                const last9PM = getLast9PM();
+                const startOfMonth = getStartOfMonth();
+                const mt = tasks.filter(t => t.staffMobile === currentUser.id && !t.deleted);
+                
+                let todayEarn = 0, monthEarn = 0;
+                
+                mt.forEach(t => { 
+                    if(t.status === 'Pending') st.p++; 
+                    if(t.category === 'Urgent' && t.status !== 'Completed') st.u++; 
+                    if(t.status === 'In Progress') st.prog++;
+                    if(t.status === 'Completed') { 
+                        st.c++;
+                        if(t.completedAt >= last9PM) { todayEarn += (t.totalCommission||0); } 
+                        if(t.completedAt >= startOfMonth) { monthEarn += (t.totalCommission||0); }
+                    } 
                 });
-                rec = mt.sort((a,b)=>b.createdAt-a.createdAt).slice(0,3);
+                
+                rec = mt.filter(t => !(t.status === 'Completed' && t.completedAt < last9PM)).sort((a,b)=>b.createdAt-a.createdAt).slice(0,3);
+                
                 document.getElementById('dashboard-stats-staff').innerHTML = `
                     <div onclick="navigateTasks('pending')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-warning/50 transition shadow-panel"><p class="text-[10px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Pending</p><p class="text-4xl font-black text-warning">${st.p}</p></div>
                     <div onclick="navigateTasks('in_progress')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-info/50 transition shadow-panel"><p class="text-[10px] text-brand-info font-bold uppercase mb-2 tracking-widest">In Progress</p><p class="text-4xl font-black text-brand-info">${st.prog}</p></div>
                     <div onclick="navigateTasks('urgent')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-danger/50 transition shadow-panel"><p class="text-[10px] text-brand-danger font-bold uppercase mb-2 tracking-widest">Urgent</p><p class="text-4xl font-black text-brand-danger">${st.u}</p></div>
-                    <div onclick="navigateTasks('completed')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-brand-success/50 transition shadow-panel"><p class="text-[10px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Completed</p><p class="text-4xl font-black">${st.c}</p></div>
-                    <div class="glass-panel p-8 rounded-3xl border-brand-success/40 bg-gradient-to-br from-emerald-900/40 to-transparent col-span-2 shadow-panel flex flex-col justify-center">
-                        <p class="text-brand-success text-xs font-black uppercase tracking-widest mb-2 flex items-center gap-1"><i class="ph ph-wallet text-xl"></i> Total Earnings</p>
-                        <p class="text-4xl md:text-5xl font-black text-white">${formatMoney(st.my)}</p>
+                    <div class="glass-panel p-6 rounded-3xl border-brand-success/30 bg-gradient-to-br from-emerald-900/40 to-transparent col-span-full md:col-span-3 shadow-panel flex flex-col justify-center">
+                        <p class="text-brand-success text-[10px] font-black uppercase tracking-widest mb-1">Today's Earnings</p>
+                        <p class="text-3xl font-black text-white">${formatMoney(todayEarn)}</p>
+                        <p class="text-[9px] text-slate-400 mt-2 uppercase font-bold tracking-widest border-t border-slate-700/50 pt-2">Monthly: <span class="text-white">${formatMoney(monthEarn)}</span></p>
                     </div>`;
             }
             renderTCards(rec, 'recent-tasks-container');
@@ -961,38 +1033,130 @@
 
         async function viewStaffProfile(mobile) {
             const staff = await DB.getStaff(mobile); if(!staff) return;
-            const tasks = await DB.getAllTasks();
+            const tasks = await DB.getAllTasks(); 
+            const startOfMonth = getStartOfMonth();
+            
             let st = { tot:0, c:0, p:0, prog:0, urgC:0, earn:0 };
-            tasks.forEach(t => { if(!t.deleted && t.staffMobile === mobile) { st.tot++; if(t.status === 'Completed') { st.c++; st.earn += (t.totalCommission || 0); if(t.category === 'Urgent') st.urgC++; } else if(t.status === 'In Progress') st.prog++; else st.p++; } });
-            document.getElementById('sp-avatar').innerText = staff.name[0].toUpperCase(); document.getElementById('sp-name').innerText = staff.name; document.getElementById('sp-mobile').innerText = staff.mobile; document.getElementById('sp-earnings').innerText = formatMoney(st.earn); document.getElementById('sp-total').innerText = st.tot; document.getElementById('sp-urgent').innerText = st.urgC; document.getElementById('sp-completed').innerText = st.c; document.getElementById('sp-progress').innerText = st.prog; document.getElementById('sp-pending').innerText = st.p;
+            let historyData = {}; 
+            
+            tasks.forEach(t => { 
+                if(!t.deleted && t.staffMobile === mobile) { 
+                    st.tot++; 
+                    if(t.status === 'Completed') { 
+                        st.c++; 
+                        if(t.completedAt >= startOfMonth) st.earn += (t.totalCommission || 0); 
+                        if(t.category === 'Urgent') st.urgC++; 
+                        
+                        let d = new Date(t.completedAt || t.createdAt);
+                        let dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                        if(!historyData[dateStr]) historyData[dateStr] = { earned: 0, customers: [] };
+                        historyData[dateStr].earned += (t.totalCommission || 0);
+                        historyData[dateStr].customers.push(t.customerName);
+                        
+                    } else if(t.status === 'In Progress') st.prog++; else st.p++; 
+                } 
+            });
+            
+            document.getElementById('sp-avatar').innerText = staff.name[0].toUpperCase(); 
+            document.getElementById('sp-name').innerText = staff.name; 
+            document.getElementById('sp-mobile').innerText = staff.mobile; 
+            document.getElementById('sp-earnings').innerText = formatMoney(st.earn); 
+            document.getElementById('sp-total').innerText = st.tot; 
+            document.getElementById('sp-urgent').innerText = st.urgC; 
+            document.getElementById('sp-completed').innerText = st.c; 
+            document.getElementById('sp-progress').innerText = st.prog; 
+            document.getElementById('sp-pending').innerText = st.p;
+            
+            const histContainer = document.getElementById('sp-history');
+            if (Object.keys(historyData).length === 0) {
+                histContainer.innerHTML = `<p class="text-xs text-slate-500 font-bold p-4 text-center bg-slate-900 rounded-xl border border-slate-800">No work history found.</p>`;
+            } else {
+                const sortedDates = Object.keys(historyData).sort((a,b) => new Date(b) - new Date(a));
+                histContainer.innerHTML = sortedDates.map(date => `
+                    <div onclick="viewHistoryDay('${mobile}', '${date}')" class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 hover:border-brand-primary/50 transition cursor-pointer group">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black text-brand-secondary tracking-widest"><i class="ph ph-calendar-blank"></i> ${date}</span>
+                            <span class="text-sm font-black text-brand-success">${formatMoney(historyData[date].earned)}</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-bold leading-relaxed line-clamp-2"><i class="ph ph-users mr-1"></i> ${historyData[date].customers.join(', ')}</p>
+                    </div>
+                `).join('');
+            }
+            
             openModal('staff-profile-modal');
         }
 
         async function saveStaff(e) { e.preventDefault(); const m=document.getElementById('staff-mobile').value.trim(); if(m.length!==10) return showToast('10 digit mobile required', 'error'); try { await DB.addStaff({ name: document.getElementById('staff-name').value.trim(), mobile: m, created: Date.now() }); showToast('Staff added!'); closeModal('staff-modal'); e.target.reset(); popStaff(); if(currentView==='staff') loadStaff(); if(currentView==='dashboard') loadDashboard(); } catch(er) { showToast(er.message || 'Error', 'error'); } }
+
+        // --- NEW: VIEW HISTORY DAY DETAILS ---
+        window.viewHistoryDay = async function(mobile, dateStr) {
+            const tasks = await DB.getAllTasks();
+            const dayTasks = tasks.filter(t => {
+                if (t.deleted || t.staffMobile !== mobile || t.status !== 'Completed') return false;
+                let d = new Date(t.completedAt || t.createdAt);
+                return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) === dateStr;
+            });
+
+            let html = '';
+            dayTasks.forEach(t => {
+                let itemsText = '';
+                if(t.parsedItems && t.parsedItems.length) {
+                    itemsText = t.parsedItems.map(i => `<span class="text-white font-black px-2 py-0.5 bg-black rounded border border-slate-700">${i.qty} ${i.unit}</span> ${i.name}`).join('  ');
+                } else {
+                    itemsText = t.rawDescription;
+                }
+                html += `
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 hover:border-brand-primary/50 transition cursor-pointer mb-3" onclick="closeModal('history-detail-modal'); viewTaskDetails('${t.id}')">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-bold text-lg text-white">${t.customerName}</h4>
+                            <p class="text-[10px] text-slate-400 font-bold mt-1"><i class="ph ph-map-pin"></i> ${t.customerAddress || 'No Address'}</p>
+                        </div>
+                        <span class="font-black text-brand-success text-lg leading-none">₹${t.totalCommission || 0}</span>
+                    </div>
+                    <div class="text-sm text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800 leading-relaxed">${itemsText}</div>
+                </div>`;
+            });
+
+            document.getElementById('hd-date').innerText = dateStr;
+            document.getElementById('hd-content').innerHTML = html || '<p class="text-center text-slate-500 font-bold mt-4">No detailed data found.</p>';
+            openModal('history-detail-modal');
+        }
 
         // --- TASK LIST LOGIC ---
         function openTaskModal() { document.getElementById('form-task').reset(); document.getElementById('task-id').value=''; document.getElementById('parse-preview-container').classList.add('hidden'); document.getElementById('task-modal-title').innerHTML='<i class="ph ph-plus-circle"></i> Create Task'; openModal('task-modal'); }
         
         async function loadTasks() {
             let ts=await DB.getAllTasks(); const f=document.getElementById('task-filter').value; const s=document.getElementById('task-search').value.toLowerCase();
-            if(currentUser.role!=='admin') ts=ts.filter(t=>t.staffMobile===currentUser.id && !t.deleted);
-            if(f==='bin') ts=ts.filter(t=>t.deleted);
-            else { 
-                ts=ts.filter(t=>!t.deleted); 
+            
+            if (currentUser.role !== 'admin') {
+                const last9PM = getLast9PM();
+                ts = ts.filter(t => {
+                    if (t.deleted || t.staffMobile !== currentUser.id) return false;
+                    if (t.status === 'Completed' && t.completedAt < last9PM) return false; 
+                    return true;
+                });
+            } else {
+                if(f==='bin') { ts=ts.filter(t=>t.deleted); } 
+                else { ts=ts.filter(t=>!t.deleted); }
+            }
+            
+            if(f!=='bin' && f!=='all') {
                 if(f==='today') ts=ts.filter(t=>isToday(t.createdAt));
                 if(f==='pending') ts=ts.filter(t=>t.status==='Pending'); 
                 if(f==='in_progress') ts=ts.filter(t=>t.status==='In Progress'); 
                 if(f==='completed') ts=ts.filter(t=>t.status==='Completed'); 
-                if(f==='urgent') ts=ts.filter(t=>t.category==='Urgent'&&t.status!=='Completed'); 
+                if(f==='urgent') ts=ts.filter(t=>t.category==='Urgent' && t.status!=='Completed'); 
             }
-            if(s) ts=ts.filter(t=>t.customerName.toLowerCase().includes(s) || t.customerMobile.includes(s));
+            
+            if(s) ts=ts.filter(t=>t.customerName.toLowerCase().includes(s) || (t.customerMobile && t.customerMobile.includes(s)));
             
             const sw = { 'In Progress': 3, 'Pending': 2, 'Completed': 1 };
             ts.sort((a, b) => {
                 if (a.category === 'Urgent' && b.category !== 'Urgent' && a.status !== 'Completed') return -1;
                 if (b.category === 'Urgent' && a.category !== 'Urgent' && b.status !== 'Completed') return 1;
                 if (sw[b.status] !== sw[a.status]) return sw[b.status] - sw[a.status];
-                return b.createdAt - a.createdAt; // Firebase string IDs require time sorting
+                return b.createdAt - a.createdAt; 
             });
             renderTCards(ts, 'task-list-container');
         }
@@ -1008,13 +1172,12 @@
                 let pBar = totQ > 0 ? Math.min(100, Math.round((delQ/totQ)*100)) : 0;
                 if(isC) pBar = 100;
 
-                // Notice the string quotes around '${t.id}' for Firebase IDs
                 return `
                 <div class="glass-panel p-6 rounded-3xl flex flex-col cursor-pointer hover:border-brand-primary/50 transition shadow-panel group relative overflow-hidden" onclick="viewTaskDetails('${t.id}')">
                     <div class="absolute top-0 left-0 h-1 bg-slate-800 w-full"><div class="h-1 ${isC ? 'bg-brand-success' : 'bg-brand-info'} transition-all duration-500" style="width: ${pBar}%"></div></div>
                     
                     <div class="flex justify-between items-start mb-4 mt-2">
-                        <div class="pr-2"><h3 class="font-bold text-xl group-hover:text-brand-primary transition truncate max-w-[180px]">${t.customerName}</h3><div class="flex items-center gap-3 mt-3"><a href="tel:${t.customerMobile}" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition text-xl"><i class="ph ph-phone"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center hover:bg-green-500 hover:text-white transition text-xl"><i class="ph ph-whatsapp-logo"></i></a><p class="text-sm text-slate-400 font-mono hidden sm:block">${t.customerMobile}</p></div></div>
+                        <div class="pr-2"><h3 class="font-bold text-xl group-hover:text-brand-primary transition truncate max-w-[180px]">${t.customerName}</h3><div class="flex items-center gap-3 mt-3"><a href="tel:${t.customerMobile}" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition text-xl ${!t.customerMobile ? 'hidden' : ''}"><i class="ph ph-phone"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center hover:bg-green-500 hover:text-white transition text-xl ${!t.customerMobile ? 'hidden' : ''}"><i class="ph ph-whatsapp-logo"></i></a><p class="text-sm text-slate-400 font-mono hidden sm:block">${t.customerMobile || 'No Number'}</p></div></div>
                         <div class="flex flex-col gap-2 items-end"><span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${sColor}">${currentAppLang==='bn'?(bnDict[t.status]||t.status):t.status}</span>${isU && !isC ? `<span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border bg-brand-danger/20 text-brand-danger border-brand-danger/30">${currentAppLang==='bn'?'জরুরি':'Urgent'}</span>` : ''}</div>
                     </div>
                     <div class="bg-black/30 p-5 rounded-2xl border border-slate-800 flex-1 mb-5"><p class="text-base text-slate-300 font-mono whitespace-pre-wrap line-clamp-3 leading-relaxed">${t.rawDescription}</p></div>
@@ -1036,7 +1199,7 @@
                 
                 document.getElementById('view-task-customer').innerText = t.customerName; 
                 document.getElementById('view-task-mobile-print').innerText = t.customerMobile; 
-                document.getElementById('view-task-address').innerText = t.customerAddress; 
+                document.getElementById('view-task-address').innerText = t.customerAddress || 'No Address Provided'; 
                 document.getElementById('view-task-staff').innerText = allStaffMap[t.staffMobile] || t.staffMobile; 
                 
                 document.getElementById('view-task-date-created').innerText = formatDate(t.createdAt);
@@ -1049,7 +1212,11 @@
                 const b = document.getElementById('view-task-badge');
                 if(t.category==='Urgent' && !isC) { b.innerText=currentAppLang==='bn'?'জরুরি':'Urgent'; b.classList.remove('hidden'); b.className=`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-brand-danger/20 text-brand-danger border border-brand-danger/30`; } else b.classList.add('hidden');
 
-                document.getElementById('view-task-contact-actions').innerHTML = `<a href="tel:${t.customerMobile}" class="w-14 h-14 rounded-full bg-slate-800 text-emerald-400 flex items-center justify-center text-3xl hover:bg-emerald-500 hover:text-white transition shadow-lg"><i class="ph ph-phone-call"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" class="w-14 h-14 rounded-full bg-slate-800 text-green-400 flex items-center justify-center text-3xl hover:bg-green-500 hover:text-white transition shadow-lg"><i class="ph ph-whatsapp-logo"></i></a>`;
+                if(t.customerMobile) {
+                    document.getElementById('view-task-contact-actions').innerHTML = `<a href="tel:${t.customerMobile}" class="w-14 h-14 rounded-full bg-slate-800 text-emerald-400 flex items-center justify-center text-3xl hover:bg-emerald-500 hover:text-white transition shadow-lg"><i class="ph ph-phone-call"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" class="w-14 h-14 rounded-full bg-slate-800 text-green-400 flex items-center justify-center text-3xl hover:bg-green-500 hover:text-white transition shadow-lg"><i class="ph ph-whatsapp-logo"></i></a>`;
+                } else {
+                    document.getElementById('view-task-contact-actions').innerHTML = '';
+                }
 
                 const iC = document.getElementById('view-task-items');
                 const activeDict = getFullDict();
@@ -1102,7 +1269,9 @@
                         act.innerHTML += `<button onclick="markC('${t.id}')" class="flex-1 py-4 rounded-2xl bg-brand-success hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-xs shadow-neon flex items-center justify-center gap-2 transition transform active:scale-95"><i class="ph ph-check-circle text-xl"></i> Done</button>`;
                     }
                     act.innerHTML += `<button onclick="copyBillText('${t.id}')" class="w-[60px] h-[60px] rounded-2xl bg-slate-700 text-white flex items-center justify-center text-2xl font-bold shadow-lg transition transform active:scale-90 hover:bg-slate-600" title="Copy Text"><i class="ph ph-copy"></i></button>`;
-                    act.innerHTML += `<button onclick="shareTaskWA('${t.id}')" class="w-[60px] h-[60px] rounded-2xl bg-green-600 text-white flex items-center justify-center text-3xl font-bold shadow-lg shadow-green-500/20 transition transform active:scale-90 hover:bg-green-500"><i class="ph ph-whatsapp-logo"></i></button>`;
+                    if(t.customerMobile) {
+                        act.innerHTML += `<button onclick="shareTaskWA('${t.id}')" class="w-[60px] h-[60px] rounded-2xl bg-green-600 text-white flex items-center justify-center text-3xl font-bold shadow-lg shadow-green-500/20 transition transform active:scale-90 hover:bg-green-500"><i class="ph ph-whatsapp-logo"></i></button>`;
+                    }
                     if(isA) act.innerHTML += `<div class="flex flex-col gap-2"><button onclick="editT('${t.id}')" class="w-12 h-[28px] rounded-lg bg-slate-700 text-white flex items-center justify-center text-sm hover:bg-slate-600 transition"><i class="ph ph-pencil-simple"></i></button><button onclick="delT('${t.id}')" class="w-12 h-[28px] rounded-lg bg-brand-danger/20 text-brand-danger flex items-center justify-center text-sm hover:bg-brand-danger/40 transition"><i class="ph ph-trash"></i></button></div>`;
                 }
                 openModal('view-task-modal');
@@ -1225,13 +1394,13 @@
                 logsText = `\n*Delivery Updates:*\n`; 
                 t.logs.forEach(l => { logsText += `🔸 ${formatDate(l.date)}\n${l.text}\n\n`; }); 
             }
-            return `*NEW DADA BHAI BUILDERS*\nDelivery Bill\n\n*Customer:* ${t.customerName}\n*Address:* ${t.customerAddress}\n\n*Items:*\n${itemsText}${logsText}\n*Status:* ${t.status}\n\n_Thanks for choosing us!_`;
+            return `*NEW DADA BHAI BUILDERS*\nDelivery Bill\n\n*Customer:* ${t.customerName}\n*Address:* ${t.customerAddress || 'N/A'}\n\n*Items:*\n${itemsText}${logsText}\n*Status:* ${t.status}\n\n_Thanks for choosing us!_`;
         }
 
         async function shareTaskWA(id) {
             const text = await getBillText(id);
             const t = await DB.getTask(id);
-            window.open(`https://wa.me/91${t.customerMobile}?text=${encodeURIComponent(text)}`, '_blank');
+            if(t.customerMobile) window.open(`https://wa.me/91${t.customerMobile}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         async function copyBillText(id) {
@@ -1294,7 +1463,8 @@
             "Overview": "সারসংক্ষেপ", "Real-time business analytics": "রিয়েল-টাইম ব্যবসার হিসাব",
             "Total Staff": "মোট স্টাফ", "Pending Tasks": "বাকি কাজ", "Pending": "বাকি কাজ",
             "In Progress": "কাজ চলছে", "Urgent": "জরুরি", "Completed": "কমপ্লিট",
-            "Total Paid": "মোট পেমেন্ট", "Total Earnings": "মোট ইনকাম", "Recent Activity": "সাম্প্রতিক কাজ",
+            "Total Paid": "মোট পেমেন্ট", "Monthly Earnings": "মাসের ইনকাম", "Today's Earnings": "আজকের ইনকাম", 
+            "Recent Activity": "সাম্প্রতিক কাজ",
             "View All Tasks": "সব কাজ দেখুন", "Team Members": "স্টাফ মেম্বার", "Manage your delivery network": "আপনার স্টাফদের ম্যানেজ করুন",
             "Add Staff": "স্টাফ যোগ করুন", "Add Team Member": "নতুন স্টাফ যোগ", "Deliveries": "ডেলিভারি লিস্ট",
             "Track and manage task pipeline (Live)": "কাজের লিস্ট ও ট্র্যাকিং (লাইভ)", "Create Task": "নতুন কাজ",
@@ -1305,7 +1475,8 @@
             "My Tasks": "আমার কাজ", "Home": "হোম", "Staff": "স্টাফ", "Rates": "রেট", "Tasks": "কাজ", "Log Out": "লগআউট",
             "Secure Logout": "লগআউট", "Secure Login": "লগইন করুন", "Admin Pass / Staff Mobile": "পাসওয়ার্ড / মোবাইল নম্বর",
             "Security Credential": "লগইন ডিটেইলস দিন", "Customer Details": "কাস্টমারের তথ্য", "Name": "নাম",
-            "Mobile Number": "মোবাইল নম্বর", "Full Delivery Address": "ডেলিভারি ঠিকানা", "Items (One per line)": "মালপত্রের লিস্ট (নিচে নিচে লিখুন)",
+            "Mobile Number (Optional)": "মোবাইল নম্বর (ঐচ্ছিক)", "Full Delivery Address (Optional)": "ডেলিভারি ঠিকানা (ঐচ্ছিক)", 
+            "Items (One per line)": "মালপত্রের লিস্ট (নিচে নিচে লিখুন)",
             "Priority": "প্রায়োরিটি", "Assign To": "কাকে দেবেন?", "Select Staff": "স্টাফ সিলেক্ট করুন",
             "Save Task": "কাজ সেভ করুন", "Normal Delivery": "নরমাল ডেলিভারি", "Urgent Delivery": "জরুরি ডেলিভারি",
             "Est. Commission": "মোট কমিশন", "Delivery Address": "ঠিকানা", "Item Breakdown & Progress": "মালপত্রের হিসাব ও স্টেটাস",
@@ -1317,7 +1488,8 @@
             "Language (ENG)": "ভাষা পাল্টান (বাং)", "Text Size (+/-)": "অক্ষর বড়/ছোট (+/-)", "Staff Full Name": "স্টাফের পুরো নাম", 
             "10-Digit Mobile Number": "১০-ডিজিটের মোবাইল নম্বর", "Create Profile": "প্রোফাইল তৈরি করুন", "Total Tasks": "মোট কাজ", 
             "Urgent Done": "জরুরি কাজ কমপ্লিট", "Task Status Breakdown": "কাজের স্টেটাস রিপোর্ট", "Today's Tasks": "আজকের কাজ",
-            "Created": "তৈরি হয়েছে", "Pending:": "বাকি:", "Not Yet": "এখনও হয়নি", "Professional Logistics Manager (Live)": "প্রফেশনাল লজিস্টিক ম্যানেজার (লাইভ)"
+            "Created": "তৈরি হয়েছে", "Pending:": "বাকি:", "Not Yet": "এখনও হয়নি", "Professional Logistics Manager (Live)": "প্রফেশনাল লজিস্টিক ম্যানেজার (লাইভ)",
+            "Daily Earning & Task History": "ডেইলি কাজের হিস্ট্রি", "Work Summary": "কাজের সারাংশ"
         };
 
         let currentAppLang = localStorage.getItem('ndbb_lang_v10') || 'en';
