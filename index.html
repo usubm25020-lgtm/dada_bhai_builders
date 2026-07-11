@@ -135,6 +135,93 @@
         </div>
     </div>
 
+
+    <!-- LUXURY SUPPORT FAB & MODAL -->
+    <button onclick="openModal('support-modal')" class="fixed bottom-20 md:bottom-8 right-5 md:right-8 z-50 w-14 h-14 bg-gradient-to-tr from-brand-info to-blue-600 rounded-full shadow-[0_0_20px_rgba(139,92,246,0.5)] flex items-center justify-center text-white text-2xl hover:scale-110 transition-transform active:scale-95 border-2 border-white/20">
+        <i class="ph ph-headset"></i>
+    </button>
+
+    <div id="support-modal" class="fixed inset-0 z-[120] hidden flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-sm rounded-[2rem] p-6 slide-up shadow-2xl relative border border-brand-info/30">
+            <button onclick="closeModal('support-modal')" class="absolute right-5 top-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition"><i class="ph ph-x"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-brand-info/20 text-brand-info flex items-center justify-center text-3xl mx-auto mb-2 shadow-[0_0_15px_rgba(139,92,246,0.3)]"><i class="ph ph-headset"></i></div>
+                <h3 class="text-2xl font-black text-white uppercase tracking-wider">Help & Support</h3>
+                <p class="text-xs text-slate-400 font-bold mt-1">Tap any manager to call directly</p>
+            </div>
+            
+            <div class="space-y-3">
+                <a href="tel:7003659831" class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-yellow-600/20 to-yellow-900/40 border border-yellow-500/30 hover:border-yellow-400 transition active:scale-95 group">
+                    <div class="w-10 h-10 rounded-full bg-yellow-500 text-black flex items-center justify-center text-xl shadow-[0_0_10px_rgba(234,179,8,0.5)]"><i class="ph ph-crown"></i></div>
+                    <div><h4 class="font-black text-white text-lg">Imran</h4><p class="text-[10px] text-yellow-500 uppercase tracking-widest font-black">Owner</p></div>
+                    <i class="ph ph-phone text-xl text-yellow-500 ml-auto group-hover:animate-pulse"></i>
+                </a>
+                <a href="tel:9382247030" class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-purple-600/20 to-purple-900/40 border border-purple-500/30 hover:border-purple-400 transition active:scale-95 group">
+                    <div class="w-10 h-10 rounded-full bg-purple-500 text-white flex items-center justify-center text-xl shadow-[0_0_10px_rgba(168,85,247,0.5)]"><i class="ph ph-user-circle-gear"></i></div>
+                    <div><h4 class="font-black text-white text-lg">Nurr</h4><p class="text-[10px] text-purple-400 uppercase tracking-widest font-black">Boro Manager</p></div>
+                    <i class="ph ph-phone text-xl text-purple-400 ml-auto group-hover:animate-pulse"></i>
+                </a>
+                <a href="tel:6296073341" class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-blue-600/20 to-blue-900/40 border border-blue-500/30 hover:border-blue-400 transition active:scale-95 group">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl shadow-[0_0_10px_rgba(59,130,246,0.5)]"><i class="ph ph-user-circle"></i></div>
+                    <div><h4 class="font-black text-white text-lg">Manjil</h4><p class="text-[10px] text-blue-400 uppercase tracking-widest font-black">Mejo Manager</p></div>
+                    <i class="ph ph-phone text-xl text-blue-400 ml-auto group-hover:animate-pulse"></i>
+                </a>
+                <a href="tel:6296111043" class="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-600/20 to-emerald-900/40 border border-emerald-500/30 hover:border-emerald-400 transition active:scale-95 group">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl shadow-[0_0_10px_rgba(16,185,129,0.5)]"><i class="ph ph-user"></i></div>
+                    <div><h4 class="font-black text-white text-lg">Usub</h4><p class="text-[10px] text-emerald-400 uppercase tracking-widest font-black">Chhoto Manager</p></div>
+                    <i class="ph ph-phone text-xl text-emerald-400 ml-auto group-hover:animate-pulse"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CUSTOMER PROFILE MODAL -->
+    <div id="customer-profile-modal" class="fixed inset-0 z-[95] hidden flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-md rounded-[2rem] flex flex-col max-h-[85vh] slide-up shadow-2xl relative overflow-hidden border border-brand-primary/30">
+            <div class="p-6 border-b border-slate-800 bg-slate-900/80 relative">
+                <button onclick="closeModal('customer-profile-modal')" class="absolute right-5 top-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition"><i class="ph ph-x"></i></button>
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-brand-primary/20 text-brand-primary flex items-center justify-center text-3xl font-black shadow-neon-blue" id="cp-avatar">C</div>
+                    <div>
+                        <h3 class="text-2xl font-black tracking-tight text-white" id="cp-name">Customer Name</h3>
+                        <p class="text-xs text-brand-secondary font-bold tracking-widest uppercase mt-1">Client Profile</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-5 custom-scrollbar">
+                <!-- Edit Form -->
+                <form id="cp-edit-form" class="bg-black/30 p-4 rounded-2xl border border-slate-700 space-y-3">
+                    <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest"><i class="ph ph-pencil-simple"></i> Modify Details</p>
+                    <input type="hidden" id="cp-hidden-name">
+                    <input type="tel" id="cp-edit-mobile" class="glass-input w-full px-4 py-3 rounded-xl text-sm font-bold" placeholder="Mobile Number">
+                    <input type="text" id="cp-edit-address" class="glass-input w-full px-4 py-3 rounded-xl text-sm font-bold" placeholder="Full Address">
+                    <button type="submit" class="w-full bg-slate-800 hover:bg-brand-primary text-white font-bold py-3 rounded-xl transition text-sm shadow-lg">Save Changes</button>
+                </form>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-brand-success/10 p-4 rounded-2xl border border-brand-success/20 text-center">
+                        <p class="text-[10px] text-brand-success uppercase font-black tracking-widest mb-1">Total Delivery</p>
+                        <p class="text-2xl font-black text-white" id="cp-total-amt">₹0</p>
+                    </div>
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700 text-center">
+                        <p class="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Total Tasks</p>
+                        <p class="text-2xl font-black text-white" id="cp-total-tasks">0</p>
+                    </div>
+                </div>
+                
+                <div class="mt-4 border-t border-slate-700/50 pt-4">
+                    <p class="text-[10px] text-brand-secondary uppercase tracking-widest font-black mb-3 px-1"><i class="ph ph-clock-counter-clockwise"></i> Order History</p>
+                    <div id="cp-history" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <!-- History Detail Modal -->
     <div id="history-detail-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <div class="glass-panel w-full max-w-md rounded-[2rem] flex flex-col max-h-[80vh] slide-up shadow-2xl relative overflow-hidden border border-brand-primary/30">
@@ -457,11 +544,16 @@
                         <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i class="ph ph-user-circle"></i> Customer Details</h4>
                         
                         <!-- NEW CUSTOMER AUTO-FILL GRID -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <input type="text" id="task-customer" required list="customer-list" oninput="autoFillCustomer()" autocomplete="off" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Name">
-                            <datalist id="customer-list"></datalist>
-                            <input type="tel" id="task-mobile" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Mobile Number (Optional)">
+                        <!-- SMART CUSTOMER AUTO-FILL GRID -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                            <div class="relative w-full">
+                                <input type="text" id="task-customer" required oninput="filterCustomDropdown()" onfocus="filterCustomDropdown()" onblur="hideCustomDropdown()" autocomplete="off" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold relative z-[60]" placeholder="Name">
+                                <!-- Custom Dropdown -->
+                                <div id="custom-customer-dropdown" class="absolute z-[70] w-full mt-1 bg-slate-800 border border-slate-600 rounded-xl shadow-2xl max-h-40 overflow-y-auto hidden custom-scrollbar"></div>
+                            </div>
+                            <input type="tel" id="task-mobile" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold relative z-[50]" placeholder="Mobile Number (Optional)">
                         </div>
+                        
                         <input type="text" id="task-address" class="glass-input w-full px-4 py-3.5 rounded-xl text-base font-bold" placeholder="Full Delivery Address (Optional)">
                         
                     </div>
@@ -772,22 +864,42 @@
         }
 
         // --- CUSTOMER AUTO-FILL LOGIC ---
+        // --- CUSTOMER AUTO-FILL LOGIC (FIXED) ---
         function populateCustomerList() {
-            const list = document.getElementById('customer-list');
-            if(!list) return;
             const unique = {};
-            window.tasksCache.forEach(t => { if(t.customerName) unique[t.customerName] = { phone: t.customerMobile, addr: t.customerAddress }; });
+            window.tasksCache.forEach(t => { 
+                if(t.customerName) {
+                    unique[t.customerName] = { phone: t.customerMobile, addr: t.customerAddress }; 
+                }
+            });
             window.customerDataCache = unique;
-            list.innerHTML = Object.keys(unique).map(name => `<option value="${name}">`).join('');
         }
 
-        window.autoFillCustomer = function() {
-            const name = document.getElementById('task-customer').value;
+
+        // --- SMART CUSTOMER AUTO-FILL LOGIC ---
+        window.filterCustomDropdown = function() {
+            const val = document.getElementById('task-customer').value.toLowerCase();
+            const drop = document.getElementById('custom-customer-dropdown');
+            let names = Object.keys(window.customerDataCache);
+            if(val) names = names.filter(n => n.toLowerCase().includes(val));
+            
+            if(names.length === 0) { drop.innerHTML = '<div class="p-3 text-slate-400 text-sm font-bold">New Customer</div>'; drop.classList.remove('hidden'); return; }
+            
+            drop.innerHTML = names.map(n => `<div onmousedown="selectCustomerDrop('${n}')" class="p-3 border-b border-slate-700/50 hover:bg-brand-primary/20 cursor-pointer text-white font-bold">${n}</div>`).join('');
+            drop.classList.remove('hidden');
+        }
+
+        window.hideCustomDropdown = function() { setTimeout(() => document.getElementById('custom-customer-dropdown').classList.add('hidden'), 150); }
+
+        window.selectCustomerDrop = function(name) {
+            document.getElementById('task-customer').value = name;
             if(window.customerDataCache && window.customerDataCache[name]) {
                 document.getElementById('task-mobile').value = window.customerDataCache[name].phone || '';
                 document.getElementById('task-address').value = window.customerDataCache[name].addr || '';
             }
+            document.getElementById('custom-customer-dropdown').classList.add('hidden');
         }
+
 
         // --- ZOOM LOGIC ---
         let currentZoom = parseInt(localStorage.getItem('ndbb_zoom_live')) || 16;
@@ -1084,7 +1196,8 @@
             
             document.getElementById('sp-avatar').innerText = staff.name[0].toUpperCase(); 
             document.getElementById('sp-name').innerText = staff.name; 
-            document.getElementById('sp-mobile').innerText = staff.mobile; 
+            document.getElementById('sp-mobile').innerHTML = `${staff.mobile} <a href="tel:${staff.mobile}" class="inline-flex items-center justify-center w-6 h-6 ml-2 bg-emerald-500/20 text-emerald-500 rounded-full hover:bg-emerald-500 hover:text-white transition"><i class="ph ph-phone text-xs"></i></a>`;
+
             document.getElementById('sp-earnings').innerText = formatMoney(st.earn); 
             document.getElementById('sp-total').innerText = st.tot; 
             document.getElementById('sp-urgent').innerText = st.urgC; 
@@ -1148,6 +1261,78 @@
             openModal('history-detail-modal');
         }
 
+        // --- NEW: CUSTOMER PROFILE & MODIFY LOGIC ---
+        // --- NEW: CUSTOMER PROFILE & MODIFY LOGIC ---
+        window.viewCustomerProfile = function(name) {
+            const cData = window.customerDataCache[name] || { phone: '', addr: '' };
+            
+            document.getElementById('cp-avatar').innerText = name ? name.charAt(0).toUpperCase() : 'C';
+            document.getElementById('cp-name').innerText = name;
+            
+            // Set edit form values
+            document.getElementById('cp-hidden-name').value = name;
+            document.getElementById('cp-edit-mobile').value = cData.phone || '';
+            document.getElementById('cp-edit-address').value = cData.addr || '';
+
+            const cTasks = window.tasksCache.filter(t => t.customerName === name && !t.deleted).sort((a,b)=>b.createdAt-a.createdAt);
+            
+            let totalAmt = 0;
+            let histHtml = '';
+            
+            cTasks.forEach(t => {
+                if(t.status === 'Completed') totalAmt += (t.totalCommission || 0);
+                
+                let sName = allStaffMap[t.staffMobile] || 'Unknown Staff';
+                let itemsText = t.parsedItems && t.parsedItems.length ? t.parsedItems.map(i => `${i.qty} ${i.unit} ${i.name}`).join(', ') : t.rawDescription.substring(0, 30) + '...';
+                
+                histHtml += `
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 cursor-pointer hover:border-brand-primary/50 transition" onclick="closeModal('customer-profile-modal'); viewTaskDetails('${t.id}')">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-black text-brand-secondary tracking-widest"><i class="ph ph-calendar-blank"></i> ${formatDate(t.createdAt).split(',')[0]}</span>
+                        <span class="text-[10px] font-black px-2 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">${t.status}</span>
+                    </div>
+                    <p class="text-sm text-white font-bold mb-1">${itemsText}</p>
+                    <p class="text-[10px] text-brand-primary font-black uppercase tracking-widest"><i class="ph ph-truck"></i> By: ${sName}</p>
+                </div>`;
+            });
+
+            document.getElementById('cp-total-amt').innerText = formatMoney(totalAmt);
+            document.getElementById('cp-total-tasks').innerText = cTasks.length;
+            document.getElementById('cp-history').innerHTML = histHtml || '<p class="text-xs text-slate-500">No history</p>';
+            
+            openModal('customer-profile-modal');
+        }
+
+
+        // কাস্টমার মডিফাই করার ফাংশন
+        document.getElementById('cp-edit-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Updating...'; btn.disabled = true;
+            
+            const name = document.getElementById('cp-hidden-name').value;
+            const newPhone = document.getElementById('cp-edit-mobile').value.trim();
+            const newAddr = document.getElementById('cp-edit-address').value.trim();
+
+            const cTasks = window.tasksCache.filter(t => t.customerName === name);
+            try {
+                // আপডেট লুপ (সব টাস্কে নতুন ডিটেইলস বসানো হচ্ছে)
+                for(let t of cTasks) {
+                    await updateDoc(doc(db, 'tasks', t.id), { customerMobile: newPhone, customerAddress: newAddr });
+                }
+                showToast('Customer Profile Updated!');
+                closeModal('customer-profile-modal');
+                // Cache update
+                window.customerDataCache[name] = { phone: newPhone, addr: newAddr };
+            } catch(err) {
+                showToast('Update failed!', 'error');
+            }
+            btn.innerText = originalText; btn.disabled = false;
+        });
+
+
+
         // --- TASK LIST LOGIC ---
         function openTaskModal() { document.getElementById('form-task').reset(); document.getElementById('task-id').value=''; document.getElementById('parse-preview-container').classList.add('hidden'); document.getElementById('task-modal-title').innerHTML='<i class="ph ph-plus-circle"></i> Create Task'; openModal('task-modal'); }
         
@@ -1202,7 +1387,7 @@
                     <div class="absolute top-0 left-0 h-1 bg-slate-800 w-full"><div class="h-1 ${isC ? 'bg-brand-success' : 'bg-brand-info'} transition-all duration-500" style="width: ${pBar}%"></div></div>
                     
                     <div class="flex justify-between items-start mb-4 mt-2">
-                        <div class="pr-2"><h3 class="font-bold text-xl group-hover:text-brand-primary transition truncate max-w-[180px]">${t.customerName}</h3><div class="flex items-center gap-3 mt-3"><a href="tel:${t.customerMobile}" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition text-xl ${!t.customerMobile ? 'hidden' : ''}"><i class="ph ph-phone"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center hover:bg-green-500 hover:text-white transition text-xl ${!t.customerMobile ? 'hidden' : ''}"><i class="ph ph-whatsapp-logo"></i></a><p class="text-sm text-slate-400 font-mono hidden sm:block">${t.customerMobile || 'No Number'}</p></div></div>
+                        <div class="pr-2"><h3 onclick="event.stopPropagation(); viewCustomerProfile('${t.customerName}')" class="font-bold text-xl hover:text-brand-primary hover:underline transition truncate max-w-[180px] cursor-pointer" title="View Customer Profile">${t.customerName}</h3><div class="flex items-center gap-3 mt-3"><a href="tel:${t.customerMobile}" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition text-xl ${!t.customerMobile ? 'hidden' : ''}"><i class="ph ph-phone"></i></a><a href="https://wa.me/91${t.customerMobile}" target="_blank" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center hover:bg-green-500 hover:text-white transition text-xl ${!t.customerMobile ? 'hidden' : ''}"><i class="ph ph-whatsapp-logo"></i></a><p class="text-sm text-slate-400 font-mono hidden sm:block">${t.customerMobile || 'No Number'}</p></div></div>
                         <div class="flex flex-col gap-2 items-end"><span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${sColor}">${currentAppLang==='bn'?(bnDict[t.status]||t.status):t.status}</span>${isU && !isC ? `<span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border bg-brand-danger/20 text-brand-danger border-brand-danger/30">${currentAppLang==='bn'?'জরুরি':'Urgent'}</span>` : ''}</div>
                     </div>
                     <div class="bg-black/30 p-5 rounded-2xl border border-slate-800 flex-1 mb-5"><p class="text-base text-slate-300 font-mono whitespace-pre-wrap line-clamp-3 leading-relaxed">${t.rawDescription}</p></div>
